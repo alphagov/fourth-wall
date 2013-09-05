@@ -4,7 +4,10 @@ Pure client-side pull request and build status monitor for Github repositories t
 
 ## How to use
 
-Serve index.html and provide the following query parameters:
+The project is hosted through Github pages:
+http://alphagov.github.io/fourth-wall/?token=<token>&gist=<gist_id>
+
+The following query parameters are required:
  - `token`: Your Github API token
  - `gist`: ID of the Gist containing the list of repositories to monitor
 
