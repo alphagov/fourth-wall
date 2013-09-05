@@ -1,84 +1,23 @@
 $(document).ready(function() {
+    // http://css-tricks.com/snippets/javascript/get-url-variables/
+    function getQueryVariable (variable) {
+           var query = window.location.search.substring(1);
+           var vars = query.split("&");
+           for (var i=0;i<vars.length;i++) {
+                   var pair = vars[i].split("=");
+                   if(pair[0] == variable){return pair[1];}
+           }
+           return(false);
+    }
+
+    var token = getQueryVariable('token');
+    var gistId = getQueryVariable('gist');
 
     $.ajaxSetup({
         headers: {
-            'Authorization': 'token ' + getToken(document.location.search)
+            'Authorization': 'token ' + token
         }
     });
-    var repoList = [
-        {
-            userName: 'alphagov',
-            repo: 'backdrop'
-        },
-        {
-            userName: 'alphagov',
-            repo: 'backdropsend'
-        },
-        {
-            userName: 'alphagov',
-            repo: 'limelight'
-        },
-        {
-            userName: 'alphagov',
-            repo: 'performance-platform'
-        },
-        {
-            userName: 'alphagov',
-            repo: 'datainsight-frontend'
-        },
-        {
-            userName: 'alphagov',
-            repo: 'datainsight-insidegov-collector'
-        },
-        {
-            userName: 'alphagov',
-            repo: 'datainsight_collector'
-        },
-        {
-            userName: 'alphagov',
-            repo: 'pp-puppet'
-        },
-        {
-            userName: 'alphagov',
-            repo: 'puppet-backdrop'
-        },
-        {
-            userName: 'alphagov',
-            repo: 'puppet-google_credentials'
-        },
-        {
-            userName: 'alphagov',
-            repo: 'backdrop-ga-collector'
-        },
-        {
-            userName: 'alphagov',
-            repo: 'backdrop-collector'
-        },
-        {
-            userName: 'alphagov',
-            repo: 'backdrop-ga-realtime-collector'
-        },
-        {
-            userName: 'alphagov',
-            repo: 'backdrop-google-spreadsheet-collector'
-        },
-        {
-            userName: 'alphagov',
-            repo: 'backdrop-pingdom-collector'
-        },
-        {
-            userName: 'alphagov',
-            repo: 'transactions-explorer'
-        },
-        {
-            userName: 'alphagov',
-            repo: 'stageprompt'
-        },
-        {
-            userName: 'alphagov',
-            repo: 'libretto'
-        }
-    ];
 
     var Comment = Backbone.Model.extend({
         parse: function (response) {
@@ -195,11 +134,37 @@ $(document).ready(function() {
         model: Repo,
 
         initialize: function () {
-          this.on('reset add remove', function (model) {
-            model.on('change', function () {
-              this.sort();
-            });
+          this.on('reset add remove', function () {
+            this.fetch();
+            this.each(function (model) {
+                model.on('change', function () {
+                  this.sort();
+                }, this);
+            }, this);
           }, this);
+        },
+
+        updateList: function () {
+            var that = this;
+            $.ajax({
+                url: 'https://api.github.com/gists/' + gistId + '?access_token=' + token,
+                type: 'GET',
+                dataType: 'jsonp',
+                success: function (gistdata) {
+                    var objects = [];
+                    for (file in gistdata.data.files) {
+                        if (gistdata.data.files.hasOwnProperty(file)) {
+                            var o = JSON.parse(gistdata.data.files[file].content);
+                            if (o) {
+                                objects.push(o);
+                            }
+                        }
+                    }
+                    if (objects.length > 0) {
+                        that.reset.call(that, objects[0]);
+                    }
+                }
+            });
         },
 
         fetch: function () {
@@ -327,18 +292,15 @@ $(document).ready(function() {
         }
     });
 
-
-    function getToken(location) {
-        return location.split("?token=")[1];
-    }
-
     var repos = new Repos();
     var repoListView = new RepoListView({
         el: $('#pulls'),
         collection: repos
     })
-    repos.reset(repoList);
-    repos.fetch();
+    repos.updateList();
+    setInterval(_.bind(function () {
+      repos.updateList();
+    }, this), 900000);
     setInterval(_.bind(function () {
       repos.fetch();
     }, this), 30000);
