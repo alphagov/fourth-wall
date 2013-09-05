@@ -45,24 +45,23 @@ $(document).ready(function() {
 
     var MasterStatus = Backbone.Model.extend({
 
-        initialize: function(){
-            this.on('change:sha', this.fetch, this);
-        },
-
         url: function() {
-            console.log('url');
-            var url = [
+            return [
                 this.get('baseUrl'),
                 this.get('userName'),
                 this.get('repo'),
+                'statuses',
                 this.get('sha')
             ].join('/');
-            console.log(url);
-            return url;
         },
 
         parse: function(response) {
-            console.log(response);
+            var failed = response.some(function(status) {
+                return status.state !== 'success' && status.state !== 'pending';
+            });
+            return {
+                failed: failed
+            }
         }
     });
 
@@ -75,8 +74,9 @@ $(document).ready(function() {
                 userName: this.get('userName'),
                 repo: this.get('repo')
             });
-            this.on('change:sha', function () {
+            this.on('sync', function () {
                 this.status.set('sha', this.get('sha'));
+                this.status.fetch();
             });
         },
 
@@ -112,12 +112,16 @@ $(document).ready(function() {
                 this.trigger('change');
             }, this);
 
-            this.status = new Status();
             this.master = new Master({
                 baseUrl: this.baseUrl,
                 userName: this.get('userName'),
                 repo: this.get('repo')
             });
+            this.on('sync', function () {
+                this.master.fetch();
+            }, this);
+
+            this.status = new Status();
             this.on('change:head', function () {
                 this.status.url = [
                     this.baseUrl,
@@ -128,12 +132,11 @@ $(document).ready(function() {
                 ].join('/');
                 this.status.fetch();
 
-                this.master.fetch();
             }, this);
             this.status.on('change', function () {
                 this.trigger('change');
             }, this);
-            this.master.on('change:status', function () {
+            this.master.status.on('change:failed', function () {
                 this.trigger('change');
             }, this);
         },
@@ -241,6 +244,12 @@ $(document).ready(function() {
         },
 
         comparator: function (a, b) {
+            if (a.master.status.get('failed')) {
+                return -1;
+            } else if (b.master.status.get('failed')) {
+                return 1;
+            }
+
             var timeA = a.get('elapsed_time'),
                 timeB = b.get('elapsed_time');
             if (!timeA && !timeB) {
@@ -263,8 +272,31 @@ $(document).ready(function() {
         },
 
         render: function () {
-            var pullId = 'pull-' + this.model.id;
             this.$el.removeClass();
+
+            var masterFailed = this.model.master.status.get('failed');
+            if (masterFailed) {
+                this.renderMasterFailed();
+            } else {
+                this.renderPullRequest();
+            }
+        },
+
+        renderMasterFailed: function () {
+            this.$el.addClass('failed');
+            this.$el.html([
+                '<h2>', this.model.get('repo'), '</h2>',
+                '<p>Failing on master</p>'
+            ].join(''));
+        },
+
+        renderPullRequest: function () {
+            if (!this.model.get('user')) {
+                // FIXME: Should never get here but does after master was
+                // failing
+                return;
+            }
+
             this.$el.addClass(this.ageClass(this.model.get('elapsed_time')));
 
             if (this.model.comment.get('thumbsup')) {
@@ -341,7 +373,7 @@ $(document).ready(function() {
             this.$el.empty();
             this.lis = [];
             this.collection.each(function (model) {
-              if (model.get('head')) {
+              if (model.get('head') || model.master.status.get('failed')) {
                 var view = new RepoView({
                     model: model,
                     list: this

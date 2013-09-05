@@ -56,11 +56,14 @@ body {
     height:0;
     clear:both;
 }
+#pulls li.failed {
+    background: #B10E1E;
+}
 #pulls li.age-aging {
-    background: #F47738;
+    background: #f4ab38;
 }
 #pulls li.age-old {
-    background: #B10E1E;
+    background: #F47738;
 }
 #pulls li.thumbsup {
     background: #85994B;
