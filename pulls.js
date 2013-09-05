@@ -43,6 +43,63 @@ $(document).ready(function() {
       }
     });
 
+    var MasterStatus = Backbone.Model.extend({
+
+        initialize: function(){
+            this.on('change:sha', this.fetch, this);
+        },
+
+        url: function() {
+            console.log('url');
+            var url = [
+                this.get('baseUrl'),
+                this.get('userName'),
+                this.get('repo'),
+                this.get('sha')
+            ].join('/');
+            console.log(url);
+            return url;
+        },
+
+        parse: function(response) {
+            console.log(response);
+        }
+    });
+
+
+    var Master = Backbone.Model.extend({
+
+        initialize: function() {
+            this.status = new MasterStatus({
+                baseUrl: this.get('baseUrl'),
+                userName: this.get('userName'),
+                repo: this.get('repo')
+            });
+            this.on('change:sha', function () {
+                this.status.set('sha', this.get('sha'));
+            });
+        },
+
+        url: function() {
+            return [
+                this.get('baseUrl'),
+                this.get('userName'),
+                this.get('repo'),
+                'branches/master'
+            ].join('/');
+        },
+
+        parse: function (response) {
+            if (!response) {
+              return;
+            }
+            var sha = response.commit.sha;
+            return {
+                sha: sha
+            };
+        }
+    });
+
     var Repo = Backbone.Model.extend({
 
         initialize: function () {
@@ -56,6 +113,11 @@ $(document).ready(function() {
             }, this);
 
             this.status = new Status();
+            this.master = new Master({
+                baseUrl: this.baseUrl,
+                userName: this.get('userName'),
+                repo: this.get('repo')
+            });
             this.on('change:head', function () {
                 this.status.url = [
                     this.baseUrl,
@@ -64,9 +126,14 @@ $(document).ready(function() {
                     'statuses',
                     this.get('head').sha
                 ].join('/');
-                this.status.fetch()
+                this.status.fetch();
+
+                this.master.fetch();
             }, this);
             this.status.on('change', function () {
+                this.trigger('change');
+            }, this);
+            this.master.on('change:status', function () {
                 this.trigger('change');
             }, this);
         },
@@ -84,7 +151,7 @@ $(document).ready(function() {
 
         parse: function (response) {
             if (!response.length) {
-              return {}; 
+              return {};
             }
             var data = response[0];
             data.elapsed_time = this.elapsedSeconds(data.created_at);
