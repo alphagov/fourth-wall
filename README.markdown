@@ -15,6 +15,7 @@ The Gist should be a JSON file with this syntax:
     "userName": "<username of the repo owner>",
     "repo": "<repository name>"
   }
-  // ...
 ]
 ```
+
+For example, the GOV.UK Performance Platform team repo list can be found in [this gist](https://gist.github.com/abersager/6449384).
