@@ -1,0 +1,102 @@
+    // See http://developer.github.com/v3/repos/statuses/
+    // ala /repos/:owner/:repo/statuses/:ref
+    // We use the base SHA
+    function updateStatus(url,pull){
+        $.ajax({
+          url: url,
+          success: function(data, textStatus, xhr) {
+            if(data.length){
+                var state = data[0].state;
+                $('#status_'+pull.id).html('Status: ' + state).addClass(state);
+            } else {
+                $('#status_'+pull.id).html('No status')
+            }
+          },
+          error: function(xhr, textStatus, errorThrown) {
+            console.log(errorThrown);
+          }
+        });        
+    }
+
+    function updateComments(pullId, url) {
+        $.ajax({
+            url: url,
+            success: function (comments) {
+                var thumbsup = comments.some(function(comment) {
+                    var checkFor = [":+1:", ":thumbsup:"];
+                    return checkFor.some(function(check) {
+                        return comment.body.indexOf(check) != -1;
+                    })
+                });
+                if (thumbsup) {
+                    $("#" + pullId).addClass("thumbsup");
+                }
+            }
+        });
+    }
+
+
+    function parseTime(timeString) {
+        var pattern = /(?:(\d+) days? )?(\d+)h (\d+)m/;
+        var match = timeString.match(pattern);
+        parts = match.slice(2, 4).map(function(part) { return parseInt(part); });
+
+        var time = parts[0] * 3600 + parts[1] * 60;
+        if (match[1] !== undefined) {
+            time += parseInt(match[1]) * 86400;
+        }
+        return time;
+    }
+
+    function update () {
+
+        $.each(repos, function(i, def) {
+            var repo = def.repo,
+                className = [def.user, def.repo].join('-'),
+                baseUrl = 'https://api.github.com/repos',
+                url = [
+                    baseUrl,
+                    def.user,
+                    def.repo,
+                    'pulls'
+                ].join('/');
+            $.ajax({
+                url: url,
+                success: function (pulls) {
+                    $('#pulls').find('.' + className).remove();
+                    $.each(pulls, function (j, pull) {
+                        
+                        $('#pulls').append($el);
+                        updateComments(pullId, pull.comments_url);
+                        var statusUrl = [
+                            baseUrl,
+                            def.user,
+                            def.repo,
+                            'statuses',
+                            pull.head.sha
+                        ].join('/');
+                        updateStatus(statusUrl,pull);
+                    });
+
+                    $fields = $('#pulls li').clone();
+
+                    $('#pulls li').remove();
+
+                    $('#pulls').append($fields.sort(function(left, right) {
+                        var leftTime = +Date.parse($(left).find('.elapsed-time').data('created-at'));
+                        var rightTime = +Date.parse($(right).find('.elapsed-time').data('created-at'));
+
+                        return leftTime > rightTime ? 1 : (leftTime < rightTime ? -1 : 0);
+                    }));
+
+                    if ($('#pulls li').length) {
+                        $('#all-quiet').hide();
+                    } else {
+                        $('#all-quiet').show();
+                    }
+
+                    updateTimes()
+                }
+            });
+        });
+    };

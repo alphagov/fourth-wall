@@ -1,0 +1,101 @@
+* {
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+}
+body {
+    font-family: ntatabularnumbers, nta, sans-serif;
+    background:black;
+}
+.avatar{
+    position:absolute;
+    width: 80px;
+    height: 80px;
+    top:15px;
+    left:15px;
+}
+.username{
+    text-shadow: 0 1px 1px black
+}
+
+.status{
+    padding:7px 10px 10px;
+    background-color: black;
+    position:absolute;
+    height: 80px;
+    width: 100px;
+    right:15px;
+    top:15px;
+}
+
+    .success{
+        background-color:green;
+    }
+    .failure{
+        background-color: red;
+    }
+    .pending{
+        background-color: orange;
+    }
+#pulls {
+    list-style:none;
+    padding:0;
+    font-size:1.5em;
+    text-shadow: 0 1px 1px #666;
+}
+#pulls li {
+    background:#097F96;
+    padding:20px 135px 15px 110px;
+    color:white;
+    margin-bottom:.5em;
+    position:relative;
+}
+#pulls li:after {
+    display:block;
+    content: '.';
+    text-indent:-999em;
+    height:0;
+    clear:both;
+}
+#pulls li.age-aging {
+    background: #F47738;
+}
+#pulls li.age-old {
+    background: #B10E1E;
+}
+#pulls li.thumbsup {
+    background: #85994B;
+}
+#pulls li h2 {
+    margin:0;
+}
+#pulls li p {
+    margin:0;
+}
+#pulls a {
+  color: white;
+  text-decoration: none;
+}
+#all-quiet {
+    color: #b7b7b7;
+    font-size:3em;
+    margin:1em;
+}
+
+p.comments {
+    float:right;
+    clear:right;
+}
+.elapsed-time {
+    float:right;
+    line-height: 110%;
+    font-size: 1.5em;
+}
+
+h2 {
+    float:left;
+    line-height: 110%;
+}
+p {
+    float:left;
+    clear:left;
+}
