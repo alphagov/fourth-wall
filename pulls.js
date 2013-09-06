@@ -402,6 +402,6 @@ $(document).ready(function() {
     }, this), 900000);
     setInterval(_.bind(function () {
       repos.fetch();
-    }, this), 30000);
+    }, this), 60000);
 });
 
