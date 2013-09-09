@@ -118,6 +118,7 @@ $(document).ready(function() {
                 repo: this.get('repo')
             });
             this.on('sync', function () {
+                this.comment.fetch();
                 this.master.fetch();
             }, this);
 
