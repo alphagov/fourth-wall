@@ -1,17 +1,20 @@
-$(document).ready(function() {
-    // http://css-tricks.com/snippets/javascript/get-url-variables/
-    function getQueryVariable (variable) {
-           var query = window.location.search.substring(1);
-           var vars = query.split("&");
-           for (var i=0;i<vars.length;i++) {
-                   var pair = vars[i].split("=");
-                   if(pair[0] == variable){return pair[1];}
-           }
-           return(false);
-    }
+(function () {
+    var FourthWall = {};
 
-    var token = getQueryVariable('token');
-    var gistId = getQueryVariable('gist');
+    // http://css-tricks.com/snippets/javascript/get-url-variables/
+    FourthWall.getQueryVariable = function (variable) {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split("=");
+            if (pair[0] === variable) {
+                return pair[1];}
+            }
+        return false;
+    };
+
+    var token = FourthWall.getQueryVariable('token');
+    var gistId = FourthWall.getQueryVariable('gist');
 
     $.ajaxSetup({
         headers: {
@@ -19,7 +22,7 @@ $(document).ready(function() {
         }
     });
 
-    var Comment = Backbone.Model.extend({
+    FourthWall.Comment = Backbone.Model.extend({
         parse: function (response) {
             var thumbsup = response.some(function(comment) {
                 var checkFor = [":+1:", ":thumbsup:"];
@@ -34,7 +37,7 @@ $(document).ready(function() {
         }
     });
 
-    var Status = Backbone.Model.extend({
+    FourthWall.Status = Backbone.Model.extend({
       parse: function (response) {
         if (!response.length) {
           return;
@@ -43,7 +46,7 @@ $(document).ready(function() {
       }
     });
 
-    var MasterStatus = Backbone.Model.extend({
+    FourthWall.MasterStatus = Backbone.Model.extend({
 
         url: function() {
             return [
@@ -66,10 +69,10 @@ $(document).ready(function() {
     });
 
 
-    var Master = Backbone.Model.extend({
+    FourthWall.Master = Backbone.Model.extend({
 
         initialize: function() {
-            this.status = new MasterStatus({
+            this.status = new FourthWall.MasterStatus({
                 baseUrl: this.get('baseUrl'),
                 userName: this.get('userName'),
                 repo: this.get('repo')
@@ -100,10 +103,10 @@ $(document).ready(function() {
         }
     });
 
-    var Repo = Backbone.Model.extend({
+    FourthWall.Repo = Backbone.Model.extend({
 
         initialize: function () {
-            this.comment = new Comment();
+            this.comment = new FourthWall.Comment();
             this.on('change:comments_url', function () {
                 this.comment.url = this.get('comments_url');
                 this.comment.fetch();
@@ -112,7 +115,7 @@ $(document).ready(function() {
                 this.trigger('change');
             }, this);
 
-            this.master = new Master({
+            this.master = new FourthWall.Master({
                 baseUrl: this.baseUrl,
                 userName: this.get('userName'),
                 repo: this.get('repo')
@@ -122,7 +125,7 @@ $(document).ready(function() {
                 this.master.fetch();
             }, this);
 
-            this.status = new Status();
+            this.status = new FourthWall.Status();
             this.on('change:head', function () {
                 this.status.url = [
                     this.baseUrl,
@@ -200,9 +203,9 @@ $(document).ready(function() {
         }
     });
 
-    var Repos = Backbone.Collection.extend({
+    FourthWall.Repos = Backbone.Collection.extend({
 
-        model: Repo,
+        model: FourthWall.Repo,
 
         initialize: function () {
           this.on('reset add remove', function () {
@@ -265,7 +268,7 @@ $(document).ready(function() {
         }
     });
 
-    var RepoView = Backbone.View.extend({
+    FourthWall.RepoView = Backbone.View.extend({
         tagName: 'li',
 
         initialize: function () {
@@ -365,7 +368,7 @@ $(document).ready(function() {
         }
     });
 
-    var RepoListView = Backbone.View.extend({
+    FourthWall.RepoListView = Backbone.View.extend({
         initialize: function () {
             this.collection.on('sort reset add remove', this.render, this);
         },
@@ -375,7 +378,7 @@ $(document).ready(function() {
             this.lis = [];
             this.collection.each(function (model) {
               if (model.get('head') || model.master.status.get('failed')) {
-                var view = new RepoView({
+                var view = new FourthWall.RepoView({
                     model: model,
                     list: this
                 });
@@ -392,17 +395,5 @@ $(document).ready(function() {
         }
     });
 
-    var repos = new Repos();
-    var repoListView = new RepoListView({
-        el: $('#pulls'),
-        collection: repos
-    })
-    repos.updateList();
-    setInterval(_.bind(function () {
-      repos.updateList();
-    }, this), 900000);
-    setInterval(_.bind(function () {
-      repos.fetch();
-    }, this), 60000);
-});
-
+    window.FourthWall = FourthWall;
+})();
