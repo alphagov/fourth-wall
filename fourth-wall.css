@@ -41,6 +41,7 @@ body {
     padding:0;
     font-size:1.5em;
     text-shadow: 0 1px 1px #666;
+    margin: 0.5em 0;
 }
 #pulls li {
     background:#097F96;
