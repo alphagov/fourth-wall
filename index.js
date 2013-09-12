@@ -1,8 +1,11 @@
 $(document).ready(function() {
     var repos = new FourthWall.Repos();
-    var repoListView = new FourthWall.RepoListView({
+    var items = new FourthWall.ListItems([], {
+        repos: repos
+    });
+    var repoListView = new FourthWall.ListView({
         el: $('#pulls'),
-        collection: repos
+        collection: items
     })
     repos.updateList();
     setInterval(_.bind(function () {

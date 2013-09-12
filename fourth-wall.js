@@ -38,169 +38,79 @@
     });
 
     FourthWall.Status = Backbone.Model.extend({
-      parse: function (response) {
-        if (!response.length) {
-          return;
-        }
-        return response[0];
-      }
-    });
 
-    FourthWall.MasterStatus = Backbone.Model.extend({
+        initialize: function () {
+            this.on('change:sha', function () {
+                this.fetch();
+            }, this);
+        },
 
-        url: function() {
+        url: function () {
             return [
                 this.get('baseUrl'),
                 this.get('userName'),
                 this.get('repo'),
                 'statuses',
                 this.get('sha')
-            ].join('/');
+            ].join('/')
         },
 
-        parse: function(response) {
-            var failed = response.some(function(status) {
+        parse: function (response) {
+            if (!response.length) {
+                return;
+            }
+            var data = response[0];
+            data.created_at = moment(data.created_at);
+            data.failed = response.some(function(status) {
                 return status.state !== 'success' && status.state !== 'pending';
             });
-            return {
-                failed: failed
-            }
+            return data;
         }
     });
 
-
-    FourthWall.Master = Backbone.Model.extend({
-
-        initialize: function() {
-            this.status = new FourthWall.MasterStatus({
-                baseUrl: this.get('baseUrl'),
-                userName: this.get('userName'),
-                repo: this.get('repo')
-            });
-            this.on('sync', function () {
-                this.status.set('sha', this.get('sha'));
-                this.status.fetch();
-            });
-        },
-
-        url: function() {
+    FourthWall.MasterStatus = FourthWall.Status.extend({
+        url: function () {
             return [
                 this.get('baseUrl'),
                 this.get('userName'),
                 this.get('repo'),
-                'branches/master'
-            ].join('/');
-        },
-
-        parse: function (response) {
-            if (!response) {
-              return;
-            }
-            var sha = response.commit.sha;
-            return {
-                sha: sha
-            };
+                'statuses',
+                'master'
+            ].join('/')
         }
     });
+
 
     FourthWall.Repo = Backbone.Model.extend({
 
         initialize: function () {
-            this.comment = new FourthWall.Comment();
-            this.on('change:comments_url', function () {
-                this.comment.url = this.get('comments_url');
-                this.comment.fetch();
-            }, this);
-            this.comment.on('change', function () {
-                this.trigger('change');
-            }, this);
-
-            this.master = new FourthWall.Master({
+            this.master = new FourthWall.MasterStatus({
                 baseUrl: this.baseUrl,
                 userName: this.get('userName'),
                 repo: this.get('repo')
             });
-            this.on('sync', function () {
-                this.comment.fetch();
-                this.master.fetch();
-            }, this);
 
-            this.status = new FourthWall.Status();
-            this.on('change:head', function () {
-                this.status.url = [
-                    this.baseUrl,
-                    this.get('userName'),
-                    this.get('repo'),
-                    'statuses',
-                    this.get('head').sha
-                ].join('/');
-                this.status.fetch();
-
-            }, this);
-            this.status.on('change', function () {
+            this.master.on('change:failed', function () {
                 this.trigger('change');
             }, this);
-            this.master.status.on('change:failed', function () {
+
+            this.pulls = new FourthWall.Pulls([], {
+                userName: this.get('userName'),
+                repo: this.get('repo')
+            });
+
+            this.pulls.on('reset add remove', function () {
                 this.trigger('change');
             }, this);
         },
 
         baseUrl: 'https://api.github.com/repos',
 
-        url: function () {
-            return [
-                this.baseUrl,
-                this.get('userName'),
-                this.get('repo'),
-                'pulls'
-            ].join('/');
-        },
-
-        parse: function (response) {
-            if (!response.length) {
-              return {};
-            }
-            var data = response[0];
-            data.elapsed_time = this.elapsedSeconds(data.created_at);
-            return data;
-        },
-
-        startOfWorkingDay: function (date) {
-            return moment(date).startOf('day').hours(9).minutes(30);
-        },
-
-        endOfWorkingDay: function (date) {
-            return moment(date).startOf('day').hours(17).minutes(30);
-        },
-
-        workingTimeForDay: function (date, options) {
-            options = options || {};
-            date = moment(date).startOf('day');
-            var isWeekend = date.day() === 0 || date.day() === 6;
-            if (isWeekend) {
-                return 0;
-            }
-            var min = Math.max(+(options.min || 0), +this.startOfWorkingDay(date));
-            var max = Math.min(+(options.max || Infinity), +this.endOfWorkingDay(date));
-            return Math.max((max - min) / 1000, 0);
-        },
-
-        elapsedSeconds: function (created_at) {
-            var now = moment();
-            created_at = moment(created_at);
-
-            var elapsed = 0;
-            var date = moment(created_at).startOf('day');
-            while (date < now) {
-                elapsed += this.workingTimeForDay(date, {
-                    min: created_at,
-                    max: now
-                });
-                date.add(1, 'days');
-            }
-
-            return elapsed;
+        fetch: function () {
+            this.pulls.fetch();
+            this.master.fetch();
         }
+
     });
 
     FourthWall.Repos = Backbone.Collection.extend({
@@ -210,9 +120,11 @@
         initialize: function () {
           this.on('reset add remove', function () {
             this.fetch();
+
             this.each(function (model) {
+                model.off();
                 model.on('change', function () {
-                  this.sort();
+                    this.trigger('change');
                 }, this);
             }, this);
           }, this);
@@ -245,13 +157,143 @@
             this.each(function (model) {
                 model.fetch();
             }, this);
+        }
+
+    });
+
+    FourthWall.Pull = Backbone.Model.extend({
+        initialize: function () {
+            this.set('repo', this.collection.repo);
+            this.comment = new FourthWall.Comment();
+            this.comment.url = this.get('comments_url');
+            this.on('change:comments_url', function () {
+                this.comment.url = this.get('comments_url');
+                this.comment.fetch();
+            }, this);
+            this.comment.on('change', function () {
+                this.trigger('change');
+            }, this);
+            this.status = new FourthWall.Status({
+                baseUrl: this.collection.baseUrl,
+                userName: this.collection.userName,
+                repo: this.get('repo'),
+                sha: this.get('head').sha
+            });
+            this.on('change:head', function () {
+                this.status.set('sha', this.get('head').sha);
+            }, this);
+            this.status.on('change', function () {
+                this.trigger('change');
+            }, this);
+            this.fetch();
+        },
+
+        fetch: function () {
+            this.status.fetch();
+            this.comment.fetch();
+        },
+
+        parse: function (data) {
+            data.elapsed_time = this.elapsedSeconds(data.created_at);
+            return data;
+        },
+
+        elapsedSeconds: function (created_at) {
+            var now = moment();
+            created_at = moment(created_at);
+
+            var elapsed = 0;
+            var date = moment(created_at).startOf('day');
+            while (date < now) {
+                elapsed += this.workingTimeForDay(date, {
+                    min: created_at,
+                    max: now
+                });
+                date.add(1, 'days');
+            }
+
+            return elapsed;
+        },
+
+        startOfWorkingDay: function (date) {
+            return moment(date).startOf('day').hours(9).minutes(30);
+        },
+
+        endOfWorkingDay: function (date) {
+            return moment(date).startOf('day').hours(17).minutes(30);
+        },
+
+        workingTimeForDay: function (date, options) {
+            options = options || {};
+            date = moment(date).startOf('day');
+            var isWeekend = date.day() === 0 || date.day() === 6;
+            if (isWeekend) {
+                return 0;
+            }
+            var min = Math.max(+(options.min || 0), +this.startOfWorkingDay(date));
+            var max = Math.min(+(options.max || Infinity), +this.endOfWorkingDay(date));
+            return Math.max((max - min) / 1000, 0);
+        }
+    });
+
+    FourthWall.Pulls = Backbone.Collection.extend({
+
+        model: FourthWall.Pull,
+
+        baseUrl: 'https://api.github.com/repos',
+
+        initialize: function (models, options) {
+            this.userName = options.userName;
+            this.repo = options.repo;
+        },
+
+        url: function () {
+            return [
+                this.baseUrl,
+                this.userName,
+                this.repo,
+                'pulls'
+            ].join('/');
+        }
+    });
+
+    FourthWall.ListItems = Backbone.Collection.extend({
+
+        initialize: function (models, options) {
+            this.repos = options.repos;
+            this.repos.on('change', function () {
+                this.fetch();
+            }, this);
+        },
+
+        isMaster: function (x) {
+            return x instanceof FourthWall.MasterStatus;
+        },
+
+        isThumbsUp: function (x) {
+            return x.comment.get('thumbsup');
+        },
+
+        compare: function (f, a, b) {
+            if (f(a) && f(b)) {
+                return 0;
+            } else if (f(a)) {
+                return -1;
+            } else if (f(b)) {
+                return 1;
+            }
         },
 
         comparator: function (a, b) {
-            if (a.master.status.get('failed')) {
-                return -1;
-            } else if (b.master.status.get('failed')) {
-                return 1;
+            
+            var res = this.compare(this.isMaster, a, b);
+            if (res != null) {
+                return res;
+            }
+
+            res = this.compare(this.isThumbsUp, a, b);
+            if (res != null) {
+                return res;
             }
 
             var timeA = a.get('elapsed_time'),
@@ -265,10 +307,23 @@
             } else {
               return timeA > timeB ? -1 : (timeA < timeB ? 1 : 0);
             }
+        },
+
+        fetch: function () {
+            var models = [];
+            this.repos.each(function (repo) {
+                repo.pulls.each(function (pull) {
+                    models.push(pull);
+                });
+                if (repo.master.get('failed')) {
+                    models.push(repo.master);
+                }
+            }, this);
+            this.reset(models);
         }
     });
 
-    FourthWall.RepoView = Backbone.View.extend({
+    FourthWall.PullView = Backbone.View.extend({
         tagName: 'li',
 
         initialize: function () {
@@ -278,23 +333,6 @@
         render: function () {
             this.$el.removeClass();
 
-            var masterFailed = this.model.master.status.get('failed');
-            if (masterFailed) {
-                this.renderMasterFailed();
-            } else {
-                this.renderPullRequest();
-            }
-        },
-
-        renderMasterFailed: function () {
-            this.$el.addClass('failed');
-            this.$el.html([
-                '<h2>', this.model.get('repo'), '</h2>',
-                '<p>Failing on master</p>'
-            ].join(''));
-        },
-
-        renderPullRequest: function () {
             if (!this.model.get('user')) {
                 // FIXME: Should never get here but does after master was
                 // failing
@@ -350,6 +388,7 @@
                 return "age-fresh";
             }
         },
+
         secondsToTime: function (seconds) {
             var days    = Math.floor(seconds / 86400);
             var hours   = Math.floor((seconds - (days * 86400)) / 3600);
@@ -368,7 +407,19 @@
         }
     });
 
-    FourthWall.RepoListView = Backbone.View.extend({
+    FourthWall.MasterView = FourthWall.PullView.extend({
+        render: function () {
+            this.$el.removeClass();
+
+            this.$el.addClass('failed');
+            this.$el.html([
+                '<h2>', this.model.get('repo'), '</h2>',
+                '<p>Failing on master</p>'
+            ].join(''));
+        }
+    });
+
+    FourthWall.ListView = Backbone.View.extend({
         initialize: function () {
             this.collection.on('sort reset add remove', this.render, this);
         },
@@ -377,15 +428,23 @@
             this.$el.empty();
             this.lis = [];
             this.collection.each(function (model) {
-              if (model.get('head') || model.master.status.get('failed')) {
-                var view = new FourthWall.RepoView({
+                var View;
+                if (model instanceof FourthWall.MasterStatus) {
+                    View = FourthWall.MasterView;
+                } else if (model instanceof FourthWall.Pull) {
+                    View = FourthWall.PullView;
+                }
+                if (!View) {
+                    return;
+                }
+
+                var view = new View({
                     model: model,
                     list: this
                 });
                 view.render();
                 view.$el.appendTo(this.$el);
                 this.lis.push(view);
-              }
             }, this);
             if (this.lis.length) {
               $('#all-quiet').hide();
