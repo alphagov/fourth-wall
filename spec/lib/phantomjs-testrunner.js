@@ -155,9 +155,11 @@ function processPage(status, page, resultsKey) {
                 // get the results that need to be written to disk
                 var fs = require("fs"),
                     xml_results = getXmlResults(page, resultsKey),
-                    output;
+                    output,
+                    all_output = '';
                 for (var filename in xml_results) {
                     if (xml_results.hasOwnProperty(filename) && (output = xml_results[filename]) && typeof(output) === "string") {
+                        all_output += output;
                         fs.write(filename, output, "w");
                     }
                 }
@@ -169,6 +171,7 @@ function processPage(status, page, resultsKey) {
                 console.log("Results for url " + page.url + ":");
                 if (failures > 0) {
                     console.error("  FAILURE: " + results[0]);
+                    console.error(all_output);
                     page.__exit_code = 1;
                     clearInterval(ival);
                 }

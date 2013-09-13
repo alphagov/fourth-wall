@@ -15,6 +15,7 @@
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-mockjax/1.5.1/jquery.mockjax.js"></script>
   <script type="text/javascript" src="lib/jasmine-1.3.1/jasmine.js"></script>
   <script type="text/javascript" src="lib/jasmine-1.3.1/jasmine-html.js"></script>
+  <script type="text/javascript" src="lib/jasmine-1.3.1/jasmine.junit_reporter.js"></script>
 
   <script type="text/javascript" src="../fourth-wall.js"></script>
 
@@ -40,11 +41,12 @@
       var reporter;
       if (getQueryVariable('ci')) {
         reporter = new jasmine.TrivialReporter();
+        jasmineEnv.addReporter(reporter);
+        jasmineEnv.addReporter(new jasmine.JUnitXmlReporter());
       } else {
-        reporter = new jasmine.HtmlReporter();  
+        reporter = new jasmine.HtmlReporter();
+        jasmineEnv.addReporter(reporter);
       }
-      
-      jasmineEnv.addReporter(reporter);
 
       jasmineEnv.specFilter = function(spec) {
         return reporter.specFilter(spec);
