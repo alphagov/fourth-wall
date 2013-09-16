@@ -12,7 +12,10 @@ body {
     height: 80px;
     top:15px;
     left:15px;
+    border-radius: 5px;
+    background-color:white;
 }
+
 .username{
     text-shadow: 0 1px 1px black
 }
@@ -93,6 +96,7 @@ p.comments {
     float:right;
     line-height: 110%;
     font-size: 1.5em;
+    font-weight: 700;
 }
 
 h2 {
