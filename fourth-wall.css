@@ -47,7 +47,7 @@ body {
     margin: 0.5em 0;
 }
 #pulls li {
-    background:#097F96;
+    background:#9FA098;
     padding:20px 135px 15px 110px;
     color:white;
     margin-bottom:.5em;
@@ -70,7 +70,7 @@ body {
     background: #F47738;
 }
 #pulls li.thumbsup {
-    background: #85994B;
+    background: #5c9317;
 }
 #pulls li h2 {
     margin:0;
