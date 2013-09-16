@@ -5,33 +5,36 @@
 body {
     font-family: ntatabularnumbers, nta, sans-serif;
     background:black;
+    margin:10px;
 }
 .avatar{
     position:absolute;
     width: 80px;
     height: 80px;
-    top:15px;
-    left:15px;
+    top:10px;
+    left:10px;
+    border-radius: 5px;
+    background-color:white;
 }
+
 .username{
     text-shadow: 0 1px 1px black
 }
 
 .status{
     padding:7px 10px 10px;
-    background-color: black;
     position:absolute;
     height: 80px;
     width: 100px;
-    right:15px;
-    top:15px;
+    right:10px;
+    top:10px;
 }
 
     .success{
         background-color:green;
     }
     .failure, .error{
-        background-color: red;
+        background-color: #BF1E2D;
     }
     .pending{
         background-color: orange;
@@ -41,14 +44,16 @@ body {
     padding:0;
     font-size:1.5em;
     text-shadow: 0 1px 1px #666;
-    margin: 0.5em 0;
+    margin: 0;
 }
 #pulls li {
-    background:#097F96;
-    padding:20px 135px 15px 110px;
+    background:#9FA098;
+    padding:10px 120px 15px 100px;
+
     color:white;
-    margin-bottom:.5em;
+    margin-bottom:10px;
     position:relative;
+    min-height:100px;
 }
 #pulls li:after {
     display:block;
@@ -67,7 +72,7 @@ body {
     background: #F47738;
 }
 #pulls li.thumbsup {
-    background: #85994B;
+    background: #5c9317;
 }
 #pulls li h2 {
     margin:0;
@@ -93,6 +98,7 @@ p.comments {
     float:right;
     line-height: 110%;
     font-size: 1.5em;
+    font-weight: 700;
 }
 
 h2 {
