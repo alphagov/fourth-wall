@@ -33,7 +33,7 @@ body {
     .success{
         background-color:green;
     }
-    .failure{
+    .failure, .error{
         background-color: red;
     }
     .pending{
