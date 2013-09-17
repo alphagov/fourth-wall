@@ -185,7 +185,9 @@ describe("Fourth Wall", function () {
           7.5 * 60 * 60 // day 1: from 10:00 to 17:30
           + fullDay * 4 // days 2 - 4: tuesday to friday, weekend ignored
           + 31 * 60 // today: from 9:30 to 10:01
-        expect(result.elapsed_time).toEqual(expected);
+
+        expect(result.elapsed_time).toBeGreaterThan(expected - 120);
+        expect(result.elapsed_time).toBeLessThan(expected + 120);
       });
     });
   });
