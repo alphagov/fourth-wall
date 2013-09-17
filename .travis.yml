@@ -1,0 +1,7 @@
+before_script: 
+  - python -m SimpleHTTPServer & 
+script:
+  - sh spec/testrunner.sh
+notifications:
+  email: false
+
