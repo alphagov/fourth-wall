@@ -12,8 +12,53 @@ function setupMoment(date, anObject) {
 
 describe("Fourth Wall", function () {
 
-  afterEach(function() {
-    $.mockjaxClear();  
+  describe("Repos", function () {
+    describe("schedule", function () {
+
+      var repos;
+      beforeEach(function() {
+        spyOn(FourthWall, "getQueryVariable");
+        spyOn(window, "setInterval");
+        spyOn(FourthWall.Repos.prototype, "fetch");
+        spyOn(FourthWall.Repos.prototype, "updateList");
+        repos = new FourthWall.Repos();
+      });
+
+      it("updates the repo list every 15 minutes by default", function () {
+        repos.schedule();
+        expect(repos.updateList.callCount).toEqual(1);
+        expect(setInterval.argsForCall[0][1]).toEqual(900000);
+        var callback = setInterval.argsForCall[0][0];
+        callback();
+        expect(repos.updateList.callCount).toEqual(2);
+      });
+
+      it("updates the repo list at a configurable interval", function () {
+        FourthWall.getQueryVariable.andReturn(120);
+        repos.schedule();
+        expect(setInterval.argsForCall[0][1]).toEqual(120000);
+        var callback = setInterval.argsForCall[0][0];
+        callback();
+        expect(repos.updateList).toHaveBeenCalled();
+      });
+
+      it("updates the status every 60 seconds by default", function () {
+        repos.schedule();
+        expect(setInterval.argsForCall[1][1]).toEqual(60000);
+        var callback = setInterval.argsForCall[1][0];
+        callback();
+        expect(repos.fetch).toHaveBeenCalled();
+      });
+
+      it("updates the status at a configurable interval", function () {
+        FourthWall.getQueryVariable.andReturn(10);
+        repos.schedule();
+        expect(setInterval.argsForCall[1][1]).toEqual(10000);
+        var callback = setInterval.argsForCall[1][0];
+        callback();
+        expect(repos.fetch).toHaveBeenCalled();
+      });
+    });
   });
 
   describe("Repo", function () {
@@ -170,10 +215,6 @@ describe("Fourth Wall", function () {
             
           ])
         });
-      });
-
-      it("collects failing masters from repos", function () {
-        
       });
     });
   });
