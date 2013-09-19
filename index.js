@@ -7,12 +7,6 @@ $(document).ready(function() {
         el: $('#pulls'),
         collection: items
     })
-    repos.updateList();
-    setInterval(_.bind(function () {
-      repos.updateList();
-    }, this), 900000);
-    setInterval(_.bind(function () {
-      repos.fetch();
-    }, this), 60000);
+    repos.schedule();
 });
 

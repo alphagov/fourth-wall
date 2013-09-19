@@ -130,6 +130,18 @@
           }, this);
         },
 
+        schedule: function () {
+            var listInterval = FourthWall.getQueryVariable('listinterval') || 900;
+            var statusInterval = FourthWall.getQueryVariable('interval') || 60;
+            this.updateList();
+            setInterval(_.bind(function () {
+              this.updateList();
+            }, this), listInterval * 1000);
+            setInterval(_.bind(function () {
+              this.fetch();
+            }, this), statusInterval * 1000);
+        },
+
         updateList: function () {
             var that = this;
             $.ajax({

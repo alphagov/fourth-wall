@@ -16,6 +16,11 @@ The following query parameters are required:
  - `token`: Your Github API token
  - `gist`: ID of the Gist containing the list of repositories to monitor
 
+Optional query parameters:
+ - `listinterval`: Update interval for the list of monitored repos in seconds (default: 900)
+ - `interval`: Update interval for monitored repos in seconds (default: 60)
+
+
 The Gist should be a JSON file with this syntax:
 ```json
 [
