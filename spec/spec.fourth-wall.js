@@ -12,6 +12,55 @@ function setupMoment(date, anObject) {
 
 describe("Fourth Wall", function () {
 
+  describe("getToken", function () {
+    beforeEach(function () {
+      spyOn(FourthWall, 'getQueryVariable');
+      FourthWall.getQueryVariable.plan = function(name) {
+        return {
+          "api.github.com_token": "com-token",
+          "token": "default-token",
+          "github.gds_token": "gds-token"
+        }[name];
+      };
+    });
+
+    it("returns correct enterprise token", function() {
+      expect(FourthWall.getToken('github.gds')).toEqual("gds-token");
+    });
+
+    it("returns correct github.com token", function() {
+      expect(FourthWall.getToken('api.github.com')).toEqual("com-token");
+    });
+
+    it("falls back to default token for github.com", function() {
+      FourthWall.getQueryVariable.plan = function(name) {
+        return {
+          "api.github.com_token": false,
+          "token": "default-token",
+          "github.gds_token": "gds-token"
+        }[name];
+      };
+
+      expect(FourthWall.getToken('api.github.com')).toEqual("default-token");
+    })
+  });
+
+  describe("getTokenFromUrl", function() {
+    beforeEach(function() {
+      spyOn(FourthWall, 'getToken');
+    });
+
+    it("extracts github.com hostname", function() {
+      FourthWall.getTokenFromUrl("http://api.github.com/foo/bar");
+      expect(FourthWall.getToken).toHaveBeenCalledWith("api.github.com");
+    });
+
+    it("extracts enterprise github hostname", function() {
+      FourthWall.getTokenFromUrl("http://github.gds/foo/bar");
+      expect(FourthWall.getToken).toHaveBeenCalledWith("github.gds");
+    });
+  });
+
   describe("Repos", function () {
     describe("schedule", function () {
 
@@ -196,10 +245,11 @@ describe("Fourth Wall", function () {
     describe("url", function () {
       it("constructs a URL from user name and repo name", function () {
         var pulls = new FourthWall.Pulls([], {
+          baseUrl: 'https://api.base.url/repos',
           userName: 'foo',
           repo: 'bar'
         });
-        expect(pulls.url()).toEqual('https://api.github.com/repos/foo/bar/pulls');
+        expect(pulls.url()).toEqual('https://api.base.url/repos/foo/bar/pulls');
       });
     });
   });

@@ -32,3 +32,20 @@ The Gist should be a JSON file with this syntax:
 ```
 
 For example, the GOV.UK Performance Platform team repo list can be found in [this gist](https://gist.github.com/abersager/6449384).
+
+## Support for other githubs
+
+If you use github enterprise you must add the `baseUrl` to each repo object and
+add a token for that hostname. The url parameter for the other hostname should
+ be of the form `<hostname>_token`.
+
+An example enterprise repository.
+
+```json
+[
+  {
+    "baseUrl": "https://myhost.com/api/v3/repos",
+    "userName": "<username of the repo owner>",
+    "repo": "<repository name>"
+  }
+]```

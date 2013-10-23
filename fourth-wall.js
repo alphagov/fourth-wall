@@ -13,14 +13,37 @@
         return false;
     };
 
-    var token = FourthWall.getQueryVariable('token');
-    var gistId = FourthWall.getQueryVariable('gist');
-
-    $.ajaxSetup({
-        headers: {
-            'Authorization': 'token ' + token
+    FourthWall.getToken = function (hostname) {
+        var token = FourthWall.getQueryVariable(hostname+'_token');
+        if (token === false && hostname == 'api.github.com') {
+            token = FourthWall.getQueryVariable('token');
         }
-    });
+        return token;
+    };
+
+    FourthWall.getTokenFromUrl = function (url) {
+        var a = document.createElement('a');
+        a.href = url;
+        return FourthWall.getToken(a.hostname);
+    };
+
+    var overrideFetch = function(url) {
+        return Backbone.Model.prototype.fetch.apply(this, [{
+            beforeSend: setupAuthentication(url)
+        }]);
+    };
+
+    var setupAuthentication = function (baseUrl) {
+        return function(xhr) {
+            xhr.setRequestHeader('Authorization', 'token ' + FourthWall.getTokenFromUrl(baseUrl))
+        };
+    };
+
+    var gistId = FourthWall.getQueryVariable('gist');
+    // hack for SimpleHTTPServer appending a slash
+    if (gistId[gistId.length-1] == '/') {
+        gistId = gistId.substr(0, gistId.length - 1);
+    }
 
     FourthWall.Comment = Backbone.Model.extend({
         parse: function (response) {
@@ -34,6 +57,9 @@
                 thumbsup: thumbsup,
                 numComments: response.length
             }
+        },
+        fetch: function() {
+            return overrideFetch.call(this, this.url);
         }
     });
 
@@ -53,6 +79,10 @@
                 'statuses',
                 this.get('sha')
             ].join('/')
+        },
+
+        fetch: function() {
+            return overrideFetch.call(this, this.get('baseUrl'));
         },
 
         parse: function (response) {
@@ -80,10 +110,13 @@
 
 
     FourthWall.Repo = Backbone.Model.extend({
+        defaults: {
+            'baseUrl': 'https://api.github.com/repos'
+        },
 
         initialize: function () {
             this.master = new FourthWall.MasterStatus({
-                baseUrl: this.baseUrl,
+                baseUrl: this.get('baseUrl'),
                 userName: this.get('userName'),
                 repo: this.get('repo')
             });
@@ -93,6 +126,7 @@
             }, this);
 
             this.pulls = new FourthWall.Pulls([], {
+                baseUrl: this.get('baseUrl'),
                 userName: this.get('userName'),
                 repo: this.get('repo')
             });
@@ -101,8 +135,6 @@
                 this.trigger('change');
             }, this);
         },
-
-        baseUrl: 'https://api.github.com/repos',
 
         fetch: function () {
             this.pulls.fetch();
@@ -143,7 +175,7 @@
         updateList: function () {
             var that = this;
             $.ajax({
-                url: 'https://api.github.com/gists/' + gistId + '?access_token=' + token,
+                url: 'https://api.github.com/gists/' + gistId + '?access_token=' + FourthWall.getToken('api.github.com'),
                 type: 'GET',
                 dataType: 'jsonp',
                 success: function (gistdata) {
@@ -250,9 +282,8 @@
 
         model: FourthWall.Pull,
 
-        baseUrl: 'https://api.github.com/repos',
-
         initialize: function (models, options) {
+            this.baseUrl = options.baseUrl;
             this.userName = options.userName;
             this.repo = options.repo;
         },
@@ -264,6 +295,10 @@
                 this.repo,
                 'pulls'
             ].join('/');
+        },
+
+        fetch: function() {
+            return overrideFetch.call(this, this.baseUrl);
         }
     });
 
