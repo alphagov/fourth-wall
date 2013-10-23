@@ -61,9 +61,7 @@
             }
             var data = response[0];
             data.created_at = moment(data.created_at);
-            data.failed = response.some(function(status) {
-                return status.state !== 'success' && status.state !== 'pending';
-            });
+            data.failed = data.state !== 'success' && data.state !== 'pending';
             return data;
         }
     });
