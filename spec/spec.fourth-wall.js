@@ -220,4 +220,39 @@ describe("Fourth Wall", function () {
       });
     });
   });
+
+  describe("Status", function () {
+    describe("parse", function () {
+      it("does nothing when there are no statuses", function () {
+        expect(FourthWall.Status.prototype.parse([])).toBeFalsy();
+      });
+
+      it("marks as failed when the latest status is not success and not pending", function () {
+        var res = FourthWall.Status.prototype.parse([
+          { state: 'error' }
+        ]);
+        expect(res.failed).toBeTruthy();
+      });
+
+      it("doesn't mark as failed when the latest status is success or pending", function () {
+        var res = FourthWall.Status.prototype.parse([
+          { state: 'pending' }
+        ]);
+        expect(res.failed).toBeFalsy();
+
+        res = FourthWall.Status.prototype.parse([
+          { state: 'success' }
+        ]);
+        expect(res.failed).toBeFalsy();
+      });
+
+      it("doesn't mark as failed when a previous status failed", function () {
+        var res = FourthWall.Status.prototype.parse([
+          { state: 'pending' },
+          { state: 'error' }
+        ]);
+        expect(res.failed).toBeFalsy();
+      });
+    });
+  });
 });
