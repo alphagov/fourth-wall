@@ -339,6 +339,15 @@
             }
         },
 
+        cmp: function(a, b) {
+            if (!a && !b) return 0;
+            if (!a) return 1;
+            if (!b) return -1;
+            if (a > b) return -1;
+            if (b > a) return 1;
+            return 0;
+        },
+
         comparator: function (a, b) {
             
             var res = this.compare(this.isMaster, a, b);
@@ -353,14 +362,12 @@
 
             var timeA = a.get('elapsed_time'),
                 timeB = b.get('elapsed_time');
-            if (!timeA && !timeB) {
-              return 0;
-            } else if (!timeA) {
-              return 1;
-            } else if (!timeB) {
-              return -1;
-            } else {
-              return timeA > timeB ? -1 : (timeA < timeB ? 1 : 0);
+
+            if ( FourthWall.getQueryVariable('recent') ) {
+                return this.cmp(timeB, timeA);
+            }
+            else {
+                return this.cmp(timeA, timeB);
             }
         },
 
