@@ -182,9 +182,19 @@
                     var objects = [];
                     for (file in gistdata.data.files) {
                         if (gistdata.data.files.hasOwnProperty(file)) {
-                            var o = JSON.parse(gistdata.data.files[file].content);
-                            if (o) {
-                                objects.push(o);
+                            var filedata = gistdata.data.files[file],
+                                lang = filedata.language;
+
+                            if (lang == 'JavaScript' || lang == null) {
+                                var o = JSON.parse(filedata.content);
+                                if (o) {
+                                    objects.push(o);
+                                }
+                            }
+                            if (lang == 'CSS') {
+                                var $custom_css = $('<style>');
+                                $custom_css.text( filedata.content );
+                                $('head').append( $custom_css );
                             }
                         }
                     }

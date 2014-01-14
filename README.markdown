@@ -21,7 +21,7 @@ Optional query parameters:
  - `interval`: Update interval for monitored repos in seconds (default: 60)
 
 
-The Gist should be a JSON file with this syntax:
+The Gist should contain one or more JSON files with this syntax:
 ```json
 [
   {
@@ -31,7 +31,14 @@ The Gist should be a JSON file with this syntax:
 ]
 ```
 
-For example, the GOV.UK Performance Platform team repo list can be found in [this gist](https://gist.github.com/abersager/6449384).
+If the Gist contains a file with the language set to `CSS`, it will be injected
+into a `<style>` block in the document head, so you can override the default
+styling without having to fork this repo.
+
+Examples:
+
+* A simple list of repos for the [Performance Platform team](https://gist.github.com/abersager/6449384)
+* A list of repos and custom CSS for the [Mainstream team](https://gist.github.com/norm/7248264)
 
 ## Support for other githubs
 
