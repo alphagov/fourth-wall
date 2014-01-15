@@ -57,9 +57,7 @@ body {
 }
 #pulls li:after {
     display:block;
-    content: '.';
-    text-indent:-999em;
-    height:0;
+    content:'';
     clear:both;
 }
 #pulls li.failed {

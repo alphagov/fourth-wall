@@ -182,9 +182,19 @@
                     var objects = [];
                     for (file in gistdata.data.files) {
                         if (gistdata.data.files.hasOwnProperty(file)) {
-                            var o = JSON.parse(gistdata.data.files[file].content);
-                            if (o) {
-                                objects.push(o);
+                            var filedata = gistdata.data.files[file],
+                                lang = filedata.language;
+
+                            if (lang == 'JavaScript' || lang == null) {
+                                var o = JSON.parse(filedata.content);
+                                if (o) {
+                                    objects.push(o);
+                                }
+                            }
+                            if (lang == 'CSS') {
+                                var $custom_css = $('<style>');
+                                $custom_css.text( filedata.content );
+                                $('head').append( $custom_css );
                             }
                         }
                     }
@@ -329,6 +339,15 @@
             }
         },
 
+        cmp: function(a, b) {
+            if (!a && !b) return 0;
+            if (!a) return 1;
+            if (!b) return -1;
+            if (a > b) return -1;
+            if (b > a) return 1;
+            return 0;
+        },
+
         comparator: function (a, b) {
             
             var res = this.compare(this.isMaster, a, b);
@@ -343,14 +362,12 @@
 
             var timeA = a.get('elapsed_time'),
                 timeB = b.get('elapsed_time');
-            if (!timeA && !timeB) {
-              return 0;
-            } else if (!timeA) {
-              return 1;
-            } else if (!timeB) {
-              return -1;
-            } else {
-              return timeA > timeB ? -1 : (timeA < timeB ? 1 : 0);
+
+            if ( FourthWall.getQueryVariable('recent') ) {
+                return this.cmp(timeB, timeA);
+            }
+            else {
+                return this.cmp(timeA, timeB);
             }
         },
 
