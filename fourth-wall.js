@@ -185,7 +185,7 @@
                             var filedata = gistdata.data.files[file],
                                 lang = filedata.language;
 
-                            if (lang == 'JavaScript' || lang == null) {
+                            if (lang == 'JavaScript' || lang == 'JSON' || lang == null) {
                                 var o = JSON.parse(filedata.content);
                                 if (o) {
                                     objects.push(o);
