@@ -35,7 +35,10 @@
 
     var setupAuthentication = function (baseUrl) {
         return function(xhr) {
-            xhr.setRequestHeader('Authorization', 'token ' + FourthWall.getTokenFromUrl(baseUrl))
+            var token = FourthWall.getTokenFromUrl(baseUrl);
+            if (token !== false && token !== '') {
+                xhr.setRequestHeader('Authorization', 'token ' + token);
+            }
         };
     };
 
@@ -174,8 +177,13 @@
 
         updateList: function () {
             var that = this;
+            var passed_token = FourthWall.getToken('api.github.com'); // from URL params
+            var optional_param = '';
+            if (passed_token !== false && passed_token !== "") {
+                optional_param = '?access_token=' + passed_token;
+            }
             $.ajax({
-                url: 'https://api.github.com/gists/' + gistId + '?access_token=' + FourthWall.getToken('api.github.com'),
+                url: 'https://api.github.com/gists/' + gistId + optional_param,
                 type: 'GET',
                 dataType: 'jsonp',
                 success: function (gistdata) {
