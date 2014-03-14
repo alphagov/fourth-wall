@@ -35,7 +35,10 @@
 
     var setupAuthentication = function (baseUrl) {
         return function(xhr) {
-            xhr.setRequestHeader('Authorization', 'token ' + FourthWall.getTokenFromUrl(baseUrl))
+            token = FourthWall.getTokenFromUrl(baseUrl);
+            if (token != false && token != '') {
+                xhr.setRequestHeader('Authorization', 'token ' + token);
+            }
         };
     };
 
