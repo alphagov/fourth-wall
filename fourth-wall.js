@@ -35,8 +35,8 @@
 
     var setupAuthentication = function (baseUrl) {
         return function(xhr) {
-            token = FourthWall.getTokenFromUrl(baseUrl);
-            if (token != false && token != '') {
+            var token = FourthWall.getTokenFromUrl(baseUrl);
+            if (token !== false && token !== '') {
                 xhr.setRequestHeader('Authorization', 'token ' + token);
             }
         };
@@ -177,9 +177,9 @@
 
         updateList: function () {
             var that = this;
-            passed_token = FourthWall.getToken('api.github.com'); // from URL params
-            optional_param = '';
-            if (passed_token != false && passed_token != "") {
+            var passed_token = FourthWall.getToken('api.github.com'); // from URL params
+            var optional_param = '';
+            if (passed_token !== false && passed_token !== "") {
                 optional_param = '?access_token=' + passed_token;
             }
             $.ajax({
