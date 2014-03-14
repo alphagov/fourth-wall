@@ -174,8 +174,13 @@
 
         updateList: function () {
             var that = this;
+            passed_token = FourthWall.getToken('api.github.com'); // from URL params
+            optional_param = '';
+            if (passed_token != false && passed_token != "") {
+                optional_param = '?access_token=' + passed_token;
+            }
             $.ajax({
-                url: 'https://api.github.com/gists/' + gistId + '?access_token=' + FourthWall.getToken('api.github.com'),
+                url: 'https://api.github.com/gists/' + gistId + optional_param,
                 type: 'GET',
                 dataType: 'jsonp',
                 success: function (gistdata) {
