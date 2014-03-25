@@ -219,7 +219,7 @@ describe("Fourth Wall", function () {
     });
 
     describe("elapsedSeconds", function () {
-      it("calculates seconds in working time since creation date", function () {
+      it("calculates seconds since creation date", function () {
         setupMoment("2013-09-09T10:01:00+01:00", window)
         spyOn(FourthWall.Comment.prototype, "fetch");
         spyOn(FourthWall.Status.prototype, "fetch");
@@ -229,14 +229,10 @@ describe("Fourth Wall", function () {
           collection: {}
         });
         var result = pull.parse({ created_at: "2013-09-02T10:00:00+01:00" });
-        var fullDay = 8 * 60 * 60;
-        var expected = 
-          7.5 * 60 * 60 // day 1: from 10:00 to 17:30
-          + fullDay * 4 // days 2 - 4: tuesday to friday, weekend ignored
-          + 31 * 60 // today: from 9:30 to 10:01
+        var fullDay = 24 * 60 * 60;
+        var expected = 7 * fullDay + 60;
 
-        expect(result.elapsed_time).toBeGreaterThan(expected - 120);
-        expect(result.elapsed_time).toBeLessThan(expected + 120);
+        expect(result.elapsed_time).toBe(expected);
       });
     });
   });
