@@ -261,38 +261,7 @@
         elapsedSeconds: function (created_at) {
             var now = moment();
             created_at = moment(created_at);
-
-            var elapsed = 0;
-            var date = moment(created_at).startOf('day');
-            while (date < now) {
-                elapsed += this.workingTimeForDay(date, {
-                    min: created_at,
-                    max: now
-                });
-                date.add(1, 'days');
-            }
-
-            return elapsed;
-        },
-
-        startOfWorkingDay: function (date) {
-            return moment(date).startOf('day').hours(9).minutes(30);
-        },
-
-        endOfWorkingDay: function (date) {
-            return moment(date).startOf('day').hours(17).minutes(30);
-        },
-
-        workingTimeForDay: function (date, options) {
-            options = options || {};
-            date = moment(date).startOf('day');
-            var isWeekend = date.day() === 0 || date.day() === 6;
-            if (isWeekend) {
-                return 0;
-            }
-            var min = Math.max(+(options.min || 0), +this.startOfWorkingDay(date));
-            var max = Math.min(+(options.max || Infinity), +this.endOfWorkingDay(date));
-            return Math.max((max - min) / 1000, 0);
+            return now.unix() - created_at.unix();
         }
     });
 
