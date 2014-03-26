@@ -1,5 +1,7 @@
 # Fourth Wall
 
+[![Build Status](https://travis-ci.org/alphagov/fourth-wall.png?branch=gh-pages)](https://travis-ci.org/alphagov/fourth-wall?branch=gh-pages)
+
 Pure client-side pull request and build status monitor for Github repositories that use Travis.
 
 ## How to use
