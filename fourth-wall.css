@@ -7,38 +7,31 @@ body {
     background:black;
     margin:10px;
 }
-.avatar{
-    position:absolute;
+.avatar {
     width: 80px;
     height: 80px;
-    top:10px;
-    left:10px;
     border-radius: 5px;
-    background-color:white;
+    background-color: white;
 }
 
-.username{
+.username {
     text-shadow: 0 1px 1px black
 }
 
-.status{
-    padding:7px 10px 10px;
-    position:absolute;
-    height: 80px;
-    width: 100px;
-    right:10px;
-    top:10px;
+.status {
+    padding: 10px;
 }
 
-    .success{
-        background-color:green;
-    }
-    .failure, .error{
-        background-color: #BF1E2D;
-    }
-    .pending{
-        background-color: orange;
-    }
+.success {
+    background-color:green;
+}
+.failure, .error {
+    background-color: #BF1E2D;
+}
+.pending {
+    background-color: orange;
+}
+
 #pulls {
     list-style:none;
     padding:0;
@@ -48,8 +41,7 @@ body {
 }
 #pulls li {
     background:#9FA098;
-    padding:10px 120px 15px 100px;
-
+    padding: 10px;
     color:white;
     margin-bottom:10px;
     position:relative;
@@ -88,22 +80,51 @@ body {
     margin:1em;
 }
 
-p.comments {
-    float:right;
-    clear:right;
-}
 .elapsed-time {
-    float:right;
     line-height: 110%;
     font-size: 1.5em;
     font-weight: 700;
 }
 
 h2 {
-    float:left;
     line-height: 110%;
 }
-p {
-    float:left;
-    clear:left;
+
+@media (min-width: 580px) {
+    #pulls li {
+        padding-right: 120px;
+        padding-left: 100px;
+    }
+
+    .avatar {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+    }
+
+    .status {
+        position: absolute;
+        min-height: 80px;
+        width: 100px;
+        right: 10px;
+        top: 10px;
+    }
+
+    p.comments {
+        float: right;
+        clear: right;
+    }
+
+    .elapsed-time {
+        float: right;
+    }
+
+    h2 {
+        float: left;
+    }
+
+    p {
+        float: left;
+        clear: left;
+    }
 }
