@@ -7,14 +7,14 @@ body {
     background:black;
     margin:10px;
 }
-.avatar{
+.avatar {
     width: 80px;
     height: 80px;
     border-radius: 5px;
     background-color: white;
 }
 
-.username{
+.username {
     text-shadow: 0 1px 1px black
 }
 
@@ -22,15 +22,16 @@ body {
     padding: 10px;
 }
 
-    .success{
-        background-color:green;
-    }
-    .failure, .error{
-        background-color: #BF1E2D;
-    }
-    .pending{
-        background-color: orange;
-    }
+.success {
+    background-color:green;
+}
+.failure, .error {
+    background-color: #BF1E2D;
+}
+.pending {
+    background-color: orange;
+}
+
 #pulls {
     list-style:none;
     padding:0;
