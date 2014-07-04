@@ -434,6 +434,13 @@
                 var statusString = '<p class="status">No status</p>';
             }
 
+            var commentCount = 0;
+            if (this.model.comment.get('numComments')){
+                commentCount = commentCount + this.model.comment.get('numComments');
+            }
+            if (this.model.info.get('review_comments')){
+                commentCount = commentCount + this.model.info.get('review_comments');
+            }
 
             this.$el.html([
                 '<img class="avatar" src="', this.model.get('user').avatar_url, '" />',
@@ -452,7 +459,7 @@
                 this.model.get('number'),
                 ')',
                 '</a></p>',
-                '<p class="comments"> ' + this.model.comment.get('numComments') + " comment" + suffix + '</p>',
+                '<p class="comments"> ' + commentCount + " comment" + suffix + '</p>',
             ].join(''));
         },
 
