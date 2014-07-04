@@ -28,6 +28,10 @@ body {
 .failure, .error {
     background-color: #BF1E2D;
 }
+.not-mergeable {
+    background-color: #9FA098;
+    font-size: 0.9em;
+}
 .pending {
     background-color: orange;
 }

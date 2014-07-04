@@ -99,6 +99,29 @@
         }
     });
 
+    FourthWall.Info = Backbone.Model.extend({
+
+        initialize: function () {
+            this.on('change:sha', function () {
+                this.fetch();
+            }, this);
+        },
+
+        url: function () {
+            return [
+                this.get('baseUrl'),
+                this.get('userName'),
+                this.get('repo'),
+                'pulls',
+                this.get('pullId')
+            ].join('/')
+        },
+
+        fetch: function() {
+            return overrideFetch.call(this, this.get('baseUrl'));
+        }
+    });
+
     FourthWall.MasterStatus = FourthWall.Status.extend({
         url: function () {
             return [
@@ -245,12 +268,25 @@
             this.status.on('change', function () {
                 this.trigger('change');
             }, this);
+            this.info = new FourthWall.Info({
+                baseUrl: this.collection.baseUrl,
+                userName: this.collection.userName,
+                repo: this.get('repo'),
+                pullId: this.get('number')
+            }),
+            this.on('change:head', function () {
+                this.info.set('sha', this.get('head').sha);
+            }, this);
+            this.info.on('change', function () {
+                this.trigger('change');
+            }, this);
             this.fetch();
         },
 
         fetch: function () {
             this.status.fetch();
             this.comment.fetch();
+            this.info.fetch();
         },
 
         parse: function (data) {
@@ -389,11 +425,21 @@
                 suffix = "s";
             }
 
-            if (this.model.status.get('state')){
+            if (this.model.info.get('mergeable') === false){
+                var statusString = '<p class="status not-mergeable">No auto merge</p>';
+            } else if (this.model.status.get('state')){
                 var state = this.model.status.get('state');
                 var statusString = '<p class="status ' + state + '">Status: ' + state + '</p>';
             } else {
                 var statusString = '<p class="status">No status</p>';
+            }
+
+            var commentCount = 0;
+            if (this.model.comment.get('numComments')){
+                commentCount = commentCount + this.model.comment.get('numComments');
+            }
+            if (this.model.info.get('review_comments')){
+                commentCount = commentCount + this.model.info.get('review_comments');
             }
 
             this.$el.html([
@@ -413,7 +459,7 @@
                 this.model.get('number'),
                 ')',
                 '</a></p>',
-                '<p class="comments"> ' + this.model.comment.get('numComments') + " comment" + suffix + '</p>',
+                '<p class="comments"> ' + commentCount + " comment" + suffix + '</p>',
             ].join(''));
         },
 
