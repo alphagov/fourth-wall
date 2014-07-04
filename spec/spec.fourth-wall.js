@@ -7,7 +7,7 @@ function setupMoment(date, anObject) {
       return realMoment(date);
     }
     return realMoment.apply(null, arguments);
-  }    
+  }
 }
 
 describe("Fourth Wall", function () {
@@ -152,6 +152,7 @@ describe("Fourth Wall", function () {
       beforeEach(function() {
         spyOn(FourthWall.Comment.prototype, "fetch");
         spyOn(FourthWall.Status.prototype, "fetch");
+        spyOn(FourthWall.Info.prototype, "fetch");
         pull = new FourthWall.Pull({
           head: {sha: 'foo'}
         }, {
@@ -198,6 +199,23 @@ describe("Fourth Wall", function () {
           changed = true;
         });
         pull.status.set('foo', 'bar');
+        expect(changed).toBe(true);
+      });
+      it("instantiates an internal Info model", function () {
+        expect(pull.info instanceof FourthWall.Info).toBe(true);
+      });
+
+      it("fetches new info data when the head changes", function () {
+        pull.set('head', 'foo');
+        expect(pull.info.fetch).toHaveBeenCalled();
+      });
+
+      it("triggers a change when the info changes", function () {
+        var changed = false;
+        pull.on('change', function () {
+          changed = true;
+        });
+        pull.info.set('foo', 'bar');
         expect(changed).toBe(true);
       });
     });
