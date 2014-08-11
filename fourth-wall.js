@@ -454,13 +454,17 @@
                 '<p><a href="', this.model.get('html_url'), '">',
                 '<span class="username">',this.model.get('user').login,'</span>',
                 ': ',
-                this.model.get('title'),
+                this.escape(this.model.get('title')),
                 ' (#',
                 this.model.get('number'),
                 ')',
                 '</a></p>',
                 '<p class="comments"> ' + commentCount + " comment" + suffix + '</p>',
             ].join(''));
+        },
+
+        escape: function (string) {
+            return $('<div>').text(string).html();
         },
 
         ageClass: function (seconds) {
