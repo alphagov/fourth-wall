@@ -8,8 +8,14 @@
         for (var i = 0; i < vars.length; i++) {
             var pair = vars[i].split("=");
             if (pair[0] === variable) {
-                return pair[1];}
+                // nasty fix for passing in urls like
+                // https://api.github.com/repos.json?ref=some-branch
+                if(pair[2]){
+                    return pair[1] + '=' + pair[2];
+                }
+                return pair[1];
             }
+        }
         return false;
     };
 
@@ -53,15 +59,19 @@
     };
 
     FourthWall.parseGithubFileData = function (data, that) {
+
         // base64 decode the bloody thing
-        console.log(data);
+        if (!data.content) {
+            return false;
+        }
+
         var contents = JSON.parse(
             atob(data.content)
         ).map(function (key, val) {
             // map to gist style keys
             return {
-                'userName': key.owner,
-                'repo': key.name
+                'userName': key.owner || key.userName,
+                'repo': key.name ||  key.repo
             };
         });
 
@@ -260,22 +270,26 @@
 
             // Default to gist, but use file otherwise
             if(!fileUrl){
-                queryString = 'https://api.github.com/gists/' + gistId + optionalParameters;
+                queryString = 'https://api.github.com/gists/' + gistId;
             } else {
                 // e.g. https://api.github.com/repos/roc/deploy-lag-radiator/contents/repos/performance-platform.json?ref=gh-pages
                 queryString = fileUrl;
             }
 
             $.ajax({
-                url: queryString,
                 type: 'GET',
                 dataType: 'jsonp',
+                url: queryString + optionalParameters,
                 success: function (data) {
+                    console.log(data);
                     if(fileUrl){
                         FourthWall.parseGithubFileData(data.data, that);
                     } else {
                         FourthWall.parseGistData(data, that);
                     }
+                },
+                error : function (err) {
+                    console.log('error', err);
                 }
             });
         },
