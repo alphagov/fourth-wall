@@ -12,6 +12,23 @@ function setupMoment(date, anObject) {
 
 describe("Fourth Wall", function () {
 
+  describe("getQueryParameters", function () {
+    it("should convert a query string into a params object", function () {
+      var query_params = FourthWall.getQueryParameters("?ref=gh-pages&token=nonsense");
+      expect(query_params).toEqual({'ref': 'gh-pages', 'token': 'nonsense'});
+    });
+  });
+  describe("buildQueryString", function () {
+    it("should convert a query string into a params object", function () {
+      var query_string = FourthWall.buildQueryString({'ref': 'gh-pages', 'token': 'nonsense'});
+      expect(query_string).toEqual("?ref=gh-pages&token=nonsense");
+    });
+    it("should handle an empty object", function () {
+      var query_string = FourthWall.buildQueryString({});
+      expect(query_string).toEqual("");
+    });
+  });
+
   describe("getToken", function () {
     beforeEach(function () {
       spyOn(FourthWall, 'getQueryVariable');
