@@ -2,6 +2,18 @@
     var FourthWall = {};
 
     // http://css-tricks.com/snippets/javascript/get-url-variables/
+    
+    FourthWall.getQueryParameters = function(str) {
+      return (str || document.location.search).replace(/(^\?)/,'').split("&").map(function(n){return n = n.split("="),this[n[0]] = n[1],this}.bind({}))[0];
+    };
+    FourthWall.buildQueryString = function(obj) {
+      var param_string = $.param(obj);
+      if(param_string.length > 0) {
+        param_string = "?" + param_string;
+      }
+      return param_string;
+    };
+
     FourthWall.getQueryVariable = function (variable) {
         var query = window.location.search.substring(1);
         var vars = query.split("&");
@@ -263,9 +275,9 @@
             var passed_token = FourthWall.getToken('api.github.com'); // from URL params
             var optionalParameters, queryString;
             if (passed_token !== false && passed_token !== "") {
-                optionalParameters = '?access_token=' + passed_token;
+                optionalParameters = {'access_token': passed_token};
             } else {
-                optionalParameters = '';
+                optionalParameters = {};
             }
 
             // Default to gist, but use file otherwise
@@ -273,8 +285,14 @@
                 queryString = 'https://api.github.com/gists/' + gistId;
             } else {
                 // e.g. https://api.github.com/repos/roc/deploy-lag-radiator/contents/repos/performance-platform.json?ref=gh-pages
-                queryString = fileUrl;
+                var fileUrlParts = fileUrl.split("?");
+                var fileUrlParamsString = fileUrlParts[1];
+                var query_params = FourthWall.getQueryParameters(fileUrlParamsString);
+                optionalParameters = $.extend({}, optionalParameters, query_params);
+                queryString = fileUrlParts[0];
             }
+
+            optionalParameters = FourthWall.buildQueryString(optionalParameters);
 
             $.ajax({
                 type: 'GET',
