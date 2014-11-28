@@ -85,12 +85,13 @@
 
         var contents = JSON.parse(
             atob(data.content)
-        ).map(function (key, val) {
-            // map to gist style keys
-            return {
-                'userName': key.owner || key.userName,
-                'repo': key.name ||  key.repo
-            };
+        ).map(function (item) {
+            // map to ensure gist style keys present
+            // we extend the item to ensure any provided baseUrls are kept
+            return $.extend(item, {
+                'userName': item.owner || item.userName,
+                'repo': item.name ||  item.repo
+            });
         });
 
         that.reset.call(that, contents);
