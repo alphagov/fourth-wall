@@ -1,6 +1,24 @@
 (function () {
     var FourthWall = {};
 
+    FourthWall.getQueryParameters = function(str) {
+      return str
+        .replace(/(^\?)/,'')
+        .split("&")
+        .reduce( function(params, n) {
+          n = n.split("=");
+          params[n[0]] = n[1];
+          return params;
+        }, {});
+    };
+    FourthWall.buildQueryString = function(obj) {
+      var param_string = $.param(obj);
+      if(param_string.length > 0) {
+        param_string = "?" + param_string;
+      }
+      return param_string;
+    };
+
     // http://css-tricks.com/snippets/javascript/get-url-variables/
     FourthWall.getQueryVariable = function (variable) {
         var query = window.location.search.substring(1);
@@ -261,25 +279,36 @@
         updateList: function () {
             var that = this;
             var passed_token = FourthWall.getToken('api.github.com'); // from URL params
-            var optionalParameters, queryString;
+            var optionalParameters, repoListUrl;
             if (passed_token !== false && passed_token !== "") {
-                optionalParameters = '?access_token=' + passed_token;
+                optionalParameters = {'access_token': passed_token};
             } else {
-                optionalParameters = '';
+                optionalParameters = {};
             }
 
             // Default to gist, but use file otherwise
             if(!fileUrl){
-                queryString = 'https://api.github.com/gists/' + gistId;
+                repoListUrl = 'https://api.github.com/gists/' + gistId;
             } else {
                 // e.g. https://api.github.com/repos/roc/deploy-lag-radiator/contents/repos/performance-platform.json?ref=gh-pages
-                queryString = fileUrl;
+                var fileUrlParts = fileUrl.split("?");
+                var fileUrlParamsString = fileUrlParts[1];
+                var queryParams;
+                if(fileUrlParamsString) {
+                  queryParams = FourthWall.getQueryParameters(fileUrlParamsString);
+                } else {
+                  queryParams = {};
+                }
+                optionalParameters = $.extend({}, optionalParameters, queryParams);
+                repoListUrl = fileUrlParts[0];
             }
+
+            optionalParameters = FourthWall.buildQueryString(optionalParameters);
 
             $.ajax({
                 type: 'GET',
                 dataType: 'jsonp',
-                url: queryString + optionalParameters,
+                url: repoListUrl + optionalParameters,
                 success: function (data) {
                     console.log(data);
                     if(fileUrl){
