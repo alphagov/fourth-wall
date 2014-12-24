@@ -136,10 +136,6 @@
 
 
     FourthWall.Repo = Backbone.Model.extend({
-        defaults: {
-            'baseUrl': 'https://api.github.com/repos'
-        },
-
         initialize: function () {
             this.master = new FourthWall.MasterStatus({
                 baseUrl: this.get('baseUrl'),

@@ -17,7 +17,9 @@ def repos(request):
             'repo': repo.name,
         }
 
-        if repo.hostname != 'github.com':
+        if repo.hostname == 'github.com':
+            parsed_repo['baseUrl'] = 'https://api.github.com/repos'
+        else:
             parsed_repo['baseUrl'] = 'https://{0}/api/v3/repos'.format(repo.hostname)
 
         parsed_repos.append(parsed_repo)
