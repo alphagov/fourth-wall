@@ -311,7 +311,6 @@
                 dataType: 'jsonp',
                 url: repoListUrl + optionalParameters,
                 success: function (data) {
-                    console.log(data);
                     if(fileUrl){
                         FourthWall.parseGithubFileData(data.data, that);
                     } else {

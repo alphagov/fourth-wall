@@ -1,4 +1,6 @@
-Copyright (C) 2013 HM Government (Government Digital Service)
+The MIT License (MIT)
+
+Crown copyright (c) 2014, UK government
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
