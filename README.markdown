@@ -7,21 +7,20 @@ and build status on a monitor.
 
 ## Configuration
 
-You need to pass a query parameter when making a request to the application:
-
-- `token`, a [GitHub personal access token](https://github.com/settings/applications)
-
-Optional query parameters:
+There are some optional query parameters:
 
 - `listinterval`, the update interval for the list of monitored repos in seconds
 - `interval`, the update interval for monitored repos in seconds
+
+To authenticate with GitHub, visit `/login` and you'll be prompted to approve
+the app.
 
 Repositories are stored in the database and modified with the Django admin interface.
 
 ### Support for GitHub Enterprise
 
-If you want to use GitHub Enterprise you must pass in a token for that hostname
-as a query parameter, of the form `<hostname>_token`.
+If you want to use GitHub Enterprise, make sure you're signed in with GitHub already
+and then visit `/login` for a second time and you can add your GitHub Enterprise account.
 
 ## Running locally
 
@@ -38,6 +37,7 @@ Install dependencies, set up the database and generate static files:
 virtualenv venv/
 . venv/bin/activate
 pip install -r requirements.txt
+python manage.py makemigrations
 python manage.py syncdb
 python manage.py collectstatic
 ```

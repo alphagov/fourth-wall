@@ -3,6 +3,7 @@ django-postgrespool==0.3.0
 Django==1.7.1
 gunicorn==19.1.1
 psycopg2==2.5.4
+python-social-auth==0.2.1
 SQLAlchemy==0.9.8
 whitenoise==1.0.3
 wsgiref==0.1.2

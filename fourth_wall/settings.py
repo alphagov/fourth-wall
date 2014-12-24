@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'fourth_wall',
+    'social.apps.django_app.default',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -50,6 +51,26 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'fourth_wall.oauth_backend.GithubEnterpriseOAuth2',
+    'social.backends.github.GithubOrganizationOAuth2',
+)
+
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+SOCIAL_AUTH_GITHUB_ORG_KEY = 'YOUR_GITHUB_APP_KEY'
+SOCIAL_AUTH_GITHUB_ORG_SECRET = 'YOUR_GITHUB_APP_SECRET'
+SOCIAL_AUTH_GITHUB_ORG_NAME = 'YOUR_GITHUB_ORGANISATION'
+
+SOCIAL_AUTH_GITHUB_ENTERPRISE_KEY = 'YOUR_GITHUB_ENTERPRISE_APP_KEY'
+SOCIAL_AUTH_GITHUB_ENTERPRISE_SECRET = 'YOUR_GITHUB_ENTERPRISE_APP_SECRET'
+
+GITHUB_ENTERPRISE_HOSTNAME = 'your_domain.github'
+
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
 
 ROOT_URLCONF = 'fourth_wall.urls'
 
@@ -102,6 +123,10 @@ STATICFILES_DIRS = (
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+)
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),

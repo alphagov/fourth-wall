@@ -8,40 +8,20 @@
         for (var i = 0; i < vars.length; i++) {
             var pair = vars[i].split("=");
             if (pair[0] === variable) {
-                // nasty fix for passing in urls like
-                // https://api.github.com/repos.json?ref=some-branch
-                if(pair[2]){
-                    return pair[1] + '=' + pair[2];
-                }
                 return pair[1];
             }
         }
         return false;
     };
 
-    FourthWall.getToken = function (hostname) {
-        var token = FourthWall.getQueryVariable(hostname+'_token');
-        if (token === false && hostname == 'api.github.com') {
-            token = FourthWall.getQueryVariable('token');
-        }
-        return token;
-    };
-
-    FourthWall.getTokenFromUrl = function (url) {
-        var a = document.createElement('a');
-        a.href = url;
-        return FourthWall.getToken(a.hostname);
-    };
-
-    var overrideFetch = function(url) {
+    var overrideFetch = function (token) {
         return Backbone.Model.prototype.fetch.apply(this, [{
-            beforeSend: setupAuthentication(url)
+            beforeSend: setupAuthentication(token)
         }]);
     };
 
-    var setupAuthentication = function (baseUrl) {
+    var setupAuthentication = function (token) {
         return function(xhr) {
-            var token = FourthWall.getTokenFromUrl(baseUrl);
             if (token !== false && token !== '') {
                 xhr.setRequestHeader('Authorization', 'token ' + token);
             }
@@ -62,7 +42,7 @@
             };
         },
         fetch: function() {
-            return overrideFetch.call(this, this.url);
+            return overrideFetch.call(this, this.token);
         }
     });
 
@@ -85,7 +65,7 @@
         },
 
         fetch: function() {
-            return overrideFetch.call(this, this.get('baseUrl'));
+            return overrideFetch.call(this, this.get('token'));
         },
 
         parse: function (response) {
@@ -118,7 +98,7 @@
         },
 
         fetch: function() {
-            return overrideFetch.call(this, this.get('baseUrl'));
+            return overrideFetch.call(this, this.get('token'));
         }
     });
 
@@ -137,21 +117,20 @@
 
     FourthWall.Repo = Backbone.Model.extend({
         initialize: function () {
-            this.master = new FourthWall.MasterStatus({
+            var childOptions = {
                 baseUrl: this.get('baseUrl'),
                 userName: this.get('userName'),
-                repo: this.get('repo')
-            });
+                repo: this.get('repo'),
+                token: this.get('token')
+            }
+
+            this.master = new FourthWall.MasterStatus(childOptions);
 
             this.master.on('change:failed', function () {
                 this.trigger('change');
             }, this);
 
-            this.pulls = new FourthWall.Pulls([], {
-                baseUrl: this.get('baseUrl'),
-                userName: this.get('userName'),
-                repo: this.get('repo')
-            });
+            this.pulls = new FourthWall.Pulls([], childOptions);
 
             this.pulls.on('reset add remove', function () {
                 this.trigger('change');
@@ -222,6 +201,7 @@
             this.set('repo', this.collection.repo);
             this.comment = new FourthWall.Comment();
             this.comment.url = this.get('comments_url');
+            this.comment.token = this.collection.token;
             this.on('change:comments_url', function () {
                 this.comment.url = this.get('comments_url');
                 this.comment.fetch();
@@ -232,6 +212,7 @@
             this.status = new FourthWall.Status({
                 baseUrl: this.collection.baseUrl,
                 userName: this.collection.userName,
+                token: this.collection.token,
                 repo: this.get('repo'),
                 sha: this.get('head').sha
             });
@@ -244,6 +225,7 @@
             this.info = new FourthWall.Info({
                 baseUrl: this.collection.baseUrl,
                 userName: this.collection.userName,
+                token: this.collection.token,
                 repo: this.get('repo'),
                 pullId: this.get('number')
             }),
@@ -282,6 +264,7 @@
             this.baseUrl = options.baseUrl;
             this.userName = options.userName;
             this.repo = options.repo;
+            this.token = options.token;
         },
 
         url: function () {
@@ -294,7 +277,7 @@
         },
 
         fetch: function() {
-            return overrideFetch.call(this, this.baseUrl);
+            return overrideFetch.call(this, this.token);
         }
     });
 

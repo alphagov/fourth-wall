@@ -6,4 +6,7 @@ urlpatterns = patterns('',
     url(r'^repos$', 'fourth_wall.views.repos', name='repos'),
 
     url(r'^admin/', include(admin.site.urls)),
+
+    url(r'^login/$', 'fourth_wall.views.login', name='login'),
+    url('', include('social.apps.django_app.urls', namespace='social')),
 )
