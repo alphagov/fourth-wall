@@ -1,24 +1,6 @@
 (function () {
     var FourthWall = {};
 
-    FourthWall.getQueryParameters = function(str) {
-      return str
-        .replace(/(^\?)/,'')
-        .split("&")
-        .reduce( function(params, n) {
-          n = n.split("=");
-          params[n[0]] = n[1];
-          return params;
-        }, {});
-    };
-    FourthWall.buildQueryString = function(obj) {
-      var param_string = $.param(obj);
-      if(param_string.length > 0) {
-        param_string = "?" + param_string;
-      }
-      return param_string;
-    };
-
     // http://css-tricks.com/snippets/javascript/get-url-variables/
     FourthWall.getQueryVariable = function (variable) {
         var query = window.location.search.substring(1);
@@ -51,52 +33,6 @@
         return FourthWall.getToken(a.hostname);
     };
 
-    FourthWall.parseGistData = function (gistData, that) {
-        var objects = [];
-        for (var file in gistData.data.files) {
-            if (gistData.data.files.hasOwnProperty(file)) {
-                var filedata = gistData.data.files[file],
-                    lang = filedata.language;
-
-                if (lang == 'JavaScript' || lang == 'JSON' || lang == null) {
-                    var o = JSON.parse(filedata.content);
-                    if (o) {
-                        objects.push(o);
-                    }
-                }
-                if (lang == 'CSS') {
-                    var $custom_css = $('<style>');
-                    $custom_css.text( filedata.content );
-                    $('head').append( $custom_css );
-                }
-            }
-        }
-        if (objects.length > 0) {
-            that.reset.call(that, objects[0]);
-        }
-    };
-
-    FourthWall.parseGithubFileData = function (data, that) {
-
-        // base64 decode the bloody thing
-        if (!data.content) {
-            return false;
-        }
-
-        var contents = JSON.parse(
-            atob(data.content)
-        ).map(function (item) {
-            // map to ensure gist style keys present
-            // we extend the item to ensure any provided baseUrls are kept
-            return $.extend(item, {
-                'userName': item.owner || item.userName,
-                'repo': item.name ||  item.repo
-            });
-        });
-
-        that.reset.call(that, contents);
-    };
-
     var overrideFetch = function(url) {
         return Backbone.Model.prototype.fetch.apply(this, [{
             beforeSend: setupAuthentication(url)
@@ -111,21 +47,6 @@
             }
         };
     };
-
-    // hack for SimpleHTTPServer appending a slash
-    var stripSlash = function(string){
-        if (string) {
-            return string.replace(/\/$/, '');
-        }
-    };
-
-    var gistId = stripSlash(
-        FourthWall.getQueryVariable('gist')
-    );
-    var fileUrl = stripSlash(
-        FourthWall.getQueryVariable('file')
-    );
-
 
     FourthWall.Comment = Backbone.Model.extend({
         parse: function (response) {
@@ -278,47 +199,16 @@
         },
 
         updateList: function () {
-            var that = this;
-            var passed_token = FourthWall.getToken('api.github.com'); // from URL params
-            var optionalParameters, repoListUrl;
-            if (passed_token !== false && passed_token !== "") {
-                optionalParameters = {'access_token': passed_token};
-            } else {
-                optionalParameters = {};
-            }
-
-            // Default to gist, but use file otherwise
-            if(!fileUrl){
-                repoListUrl = 'https://api.github.com/gists/' + gistId;
-            } else {
-                // e.g. https://api.github.com/repos/roc/deploy-lag-radiator/contents/repos/performance-platform.json?ref=gh-pages
-                var fileUrlParts = fileUrl.split("?");
-                var fileUrlParamsString = fileUrlParts[1];
-                var queryParams;
-                if(fileUrlParamsString) {
-                  queryParams = FourthWall.getQueryParameters(fileUrlParamsString);
-                } else {
-                  queryParams = {};
-                }
-                optionalParameters = $.extend({}, optionalParameters, queryParams);
-                repoListUrl = fileUrlParts[0];
-            }
-
-            optionalParameters = FourthWall.buildQueryString(optionalParameters);
-
             $.ajax({
+                context: this,
                 type: 'GET',
-                dataType: 'jsonp',
-                url: repoListUrl + optionalParameters,
+                dataType: 'json',
+                url: '/repos',
                 success: function (data) {
-                    if(fileUrl){
-                        FourthWall.parseGithubFileData(data.data, that);
-                    } else {
-                        FourthWall.parseGistData(data, that);
-                    }
+                    this.reset(data.repositories);
                 },
-                error : function (err) {
-                    console.log('error', err);
+                error: function (err) {
+                    console.error('Error fetching repository list', err);
                 }
             });
         },
