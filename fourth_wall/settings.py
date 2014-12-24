@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'fourth_wall',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -105,10 +106,3 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
-
-REPOSITORIES = [
-    {
-        'userName': 'django',
-        'repo': 'django',
-    },
-]
