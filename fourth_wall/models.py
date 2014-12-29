@@ -1,4 +1,18 @@
+from django.core.validators import validate_slug
 from django.db import models
+
+
+class Dashboard(models.Model):
+    slug = models.CharField(
+        max_length=50,
+        unique=True,
+        validators=[validate_slug]
+    )
+
+    repositories = models.ManyToManyField('Repository', blank=True)
+
+    def __unicode__(self):
+        return '{0}'.format(self.slug)
 
 
 class Repository(models.Model):

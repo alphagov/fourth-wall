@@ -1,4 +1,4 @@
-from .models import Repository
+from .models import Dashboard
 
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
@@ -11,10 +11,16 @@ def home(request):
     if not request.user.is_authenticated():
         return redirect('login')
 
-    return render(request, 'index.html')
+    return render(request, 'index.html', {
+        'dashboards': Dashboard.objects.all()
+    })
 
 
-def repos(request):
+def dashboard(request, dashboard_slug=None):
+    return render(request, 'dashboard.html', {'dashboard': dashboard_slug})
+
+
+def repos(request, dashboard_slug=None):
     parsed_repos = []
 
     if not request.user.is_authenticated():
@@ -43,7 +49,16 @@ def repos(request):
 
         return token
 
-    for repo in Repository.objects.all():
+    try:
+        dashboard_model = Dashboard.objects.get(slug=dashboard_slug)
+    except Dashboard.DoesNotExist:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Dashboard not found'
+        }, status=404)
+
+
+    for repo in dashboard_model.repositories.all():
         parsed_repo = {
             'baseUrl': github_api_url_for_hostname(repo.hostname),
             'userName': repo.owner,

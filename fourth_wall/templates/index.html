@@ -1,21 +1,16 @@
-{% load staticfiles %}
-
 <!doctype html>
 <html>
     <head>
         <title>Fourth Wall</title>
-        <link rel="stylesheet" href="{% static "stylesheets/fourth-wall.css" %}">
     </head>
     <body>
-        <ul id="pulls"></ul>
-        <p id="all-quiet">No open pull requests.</p>
-
-        <script src="https://code.jquery.com/jquery-2.0.0.min.js" type="text/javascript"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js" type="text/javascript"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js" type="text/javascript"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js" type="text/javascript"></script>
-
-        <script src="{% static "javascript/fourth-wall.js" %}" type="text/javascript"></script>
-        <script src="{% static "javascript/index.js" %}" type="text/javascript"></script>
+        <h1>List of dashboards</h1>
+        <ul>
+            {% for dashboard in dashboards %}
+            <li>
+                <a href='{% url 'dashboard' dashboard_slug=dashboard.slug %}'>{{ dashboard.slug }}</a>
+            </li>
+            {% endfor %}
+        </ul>
     </body>
 </html>

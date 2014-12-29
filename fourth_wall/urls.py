@@ -3,7 +3,9 @@ from django.contrib import admin
 
 urlpatterns = patterns('',
     url(r'^$', 'fourth_wall.views.home', name='home'),
-    url(r'^repos$', 'fourth_wall.views.repos', name='repos'),
+
+    url(r'^repos/(?P<dashboard_slug>[\w\-]+)$', 'fourth_wall.views.repos', name='repos'),
+    url(r'^dashboard/(?P<dashboard_slug>[\w\-]+)$', 'fourth_wall.views.dashboard', name='dashboard'),
 
     url(r'^admin/', include(admin.site.urls)),
 

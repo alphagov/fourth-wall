@@ -174,11 +174,13 @@
         },
 
         updateList: function () {
+            var dashboardSlug = window.location.pathname.split('/').pop();
+
             $.ajax({
                 context: this,
                 type: 'GET',
                 dataType: 'json',
-                url: '/repos',
+                url: '/repos/' + dashboardSlug,
                 success: function (data) {
                     this.reset(data.repositories);
                 },
