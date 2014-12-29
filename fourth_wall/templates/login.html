@@ -1,0 +1,18 @@
+<h1>Login</h1>
+
+<p>
+    When you log in, this app will store a <strong>read-only</strong> token from GitHub
+    that it will use to make requests to the GitHub API.
+</p>
+
+{% if 'github-org' not in linked_services %}
+    <p><a href="{% url "social:begin" backend="github-org" %}">Login with GitHub</a></p>
+{% endif %}
+
+{% if 'github-org' in linked_services and 'github-enterprise' not in linked_services %}
+    <p>
+        As you're signed in with GitHub already (as {{ user.username }}), you should
+        <a href="{% url "social:begin" backend="github-enterprise" %}">link your GitHub Enterprise account</a>
+        so that we can store a token for that too.
+    </p>
+{% endif %}

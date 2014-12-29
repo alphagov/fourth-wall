@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Fourth Wall</title>
+    </head>
+    <body>
+        <h1>List of dashboards</h1>
+        <ul>
+            {% for dashboard in dashboards %}
+            <li>
+                <a href='{% url 'dashboard' dashboard_slug=dashboard.slug %}'>{{ dashboard.slug }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>

@@ -1,61 +1,56 @@
 # Fourth Wall
 
-[![Build Status](https://travis-ci.org/alphagov/fourth-wall.png?branch=gh-pages)](https://travis-ci.org/alphagov/fourth-wall?branch=gh-pages)
+[![Build Status](https://travis-ci.org/alphagov/fourth-wall.png)](https://travis-ci.org/alphagov/fourth-wall)
 
-Pure client-side pull request and build status monitor for Github repositories that use Travis.
+Fourth Wall is a Django application for displaying open pull requests
+and build status on a monitor.
 
-## How to use
+## Configuration
 
-The project is hosted through Github pages:
-`http://alphagov.github.io/fourth-wall/?token=_token_&gist=_gist_id_`
+There are some optional query parameters:
 
-You will need to have a Github API token with access to the relevant
-repositories if you don't already have one. To do that, visit
-https://github.com/settings/applications and create a new personal
-access token.
+- `listinterval`, the update interval for the list of monitored repos in seconds
+- `interval`, the update interval for monitored repos in seconds
 
-The following query parameters are required:
- - `token`: Your Github API token
- - `gist`: ID of the Gist containing the list of repositories to monitor
+To authenticate with GitHub, visit `/login` and you'll be prompted to approve
+the app.
 
-Optional query parameters:
- - `listinterval`: Update interval for the list of monitored repos in seconds (default: 900)
- - `interval`: Update interval for monitored repos in seconds (default: 60)
+Repositories are stored in the database and modified with the Django admin interface.
 
+### Support for GitHub Enterprise
 
-The Gist should contain one or more JSON files with this syntax:
-```json
-[
-  {
-    "userName": "<username of the repo owner>",
-    "repo": "<repository name>"
-  }
-]
+If you want to use GitHub Enterprise, make sure you're signed in with GitHub already
+and then visit `/login` for a second time and you can add your GitHub Enterprise account.
+
+## Running locally
+
+Create a PostgreSQL database:
+
+```sql
+CREATE DATABASE fourth_wall;
+CREATE USER fourth_wall WITH SUPERUSER PASSWORD 'devpassword';
 ```
 
-If the Gist contains a file with the language set to `CSS`, it will be injected
-into a `<style>` block in the document head, so you can override the default
-styling without having to fork this repo.
+Install dependencies, set up the database and generate static files:
 
-Examples:
+```bash
+virtualenv venv/
+. venv/bin/activate
+pip install -r requirements.txt
+python manage.py makemigrations
+python manage.py syncdb
+python manage.py collectstatic
+```
 
-* A simple list of repos for the [Performance Platform team](https://gist.github.com/abersager/6449384)
-* A list of repos and custom CSS for the [Mainstream team](https://gist.github.com/norm/7248264)
+Run the app with foreman:
 
-## Support for other githubs
+```bash
+python manage.py runserver 0.0.0.0:5000
+```
 
-If you use github enterprise you must add the `baseUrl` to each repo object and
-add a token for that hostname. The url parameter for the other hostname should
- be of the form `<hostname>_token`.
+## Deploying to Heroku
 
-An example enterprise repository.
-
-```json
-[
-  {
-    "baseUrl": "https://myhost.com/api/v3/repos",
-    "userName": "<username of the repo owner>",
-    "repo": "<repository name>"
-  }
-]
+```bash
+heroku create
+git push heroku master
 ```
