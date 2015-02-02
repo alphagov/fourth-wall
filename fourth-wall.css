@@ -88,6 +88,7 @@ body {
     line-height: 110%;
     font-size: 1.5em;
     font-weight: 700;
+    white-space: nowrap;
 }
 
 h2 {
