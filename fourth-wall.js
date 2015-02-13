@@ -52,7 +52,7 @@
     };
 
     FourthWall.parseGistData = function (gistData, that) {
-        var objects = [];
+        var config = [];
         for (var file in gistData.data.files) {
             if (gistData.data.files.hasOwnProperty(file)) {
                 var filedata = gistData.data.files[file],
@@ -61,7 +61,7 @@
                 if (lang == 'JavaScript' || lang == 'JSON' || lang == null) {
                     var o = JSON.parse(filedata.content);
                     if (o) {
-                        objects.push(o);
+                        config.push(o);
                     }
                 }
                 if (lang == 'CSS') {
@@ -71,8 +71,8 @@
                 }
             }
         }
-        if (objects.length > 0) {
-            that.reset.call(that, objects[0]);
+        if (config.length > 0) {
+            that.reset.call(that, config[0]);
         }
     };
 
