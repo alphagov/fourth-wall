@@ -1,5 +1,6 @@
 (function () {
     var FourthWall = {};
+    var users = [];
 
     FourthWall.getQueryParameters = function(str) {
       return str
@@ -58,19 +59,24 @@
                 var filedata = gistData.data.files[file],
                     lang = filedata.language;
 
-                if (lang == 'JavaScript' || lang == 'JSON' || lang == null) {
-                    var o = JSON.parse(filedata.content);
-                    if (o) {
-                        config.push(o);
+                if (file == 'users.json') {
+                    var usersFile = filedata.content
+                    if (usersFile) {
+                        users = JSON.parse(usersFile);
                     }
-                }
-                if (lang == 'CSS') {
+                } else if (lang == 'JavaScript' || lang == 'JSON' || lang == null) {
+                      var configFile = JSON.parse(filedata.content);
+                      if (configFile) {
+                          config.push(configFile);
+                      }
+                } else if (lang == 'CSS') {
                     var $custom_css = $('<style>');
                     $custom_css.text( filedata.content );
                     $('head').append( $custom_css );
                 }
             }
         }
+
         if (config.length > 0) {
             that.reset.call(that, config[0]);
         }
@@ -503,6 +509,10 @@
             }
 
             this.$el.addClass(this.ageClass(this.model.get('elapsed_time')));
+
+            if (users.length > 0 && $.inArray(this.model.get('user').login, users) == -1) {
+                this.$el.addClass('unimportant-user');
+            }
 
             if (this.model.comment.get('thumbsup')) {
                 this.$el.addClass("thumbsup");
