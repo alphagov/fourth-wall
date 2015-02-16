@@ -4,6 +4,8 @@
 
 Pure client-side pull request and build status monitor for Github repositories that use Travis.
 
+![Screenshot of Fourth Wall](https://cloud.githubusercontent.com/assets/355033/6211416/6341db4e-b5d1-11e4-99d2-57b80a400a41.png)
+
 ## How to use
 
 The project is hosted through Github pages:
