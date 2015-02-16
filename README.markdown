@@ -33,6 +33,16 @@ The Gist should contain one or more JSON files with this syntax:
 ]
 ```
 
+Optionally, the Gist can contain a JSON file named `users`, to list
+users the team cares about. Fourth Wall will then only display PRs
+across your tracked apps opened by these users. Syntax:
+```json
+[
+  "username0",
+  "username1"
+]
+```
+
 If the Gist contains a file with the language set to `CSS`, it will be injected
 into a `<style>` block in the document head, so you can override the default
 styling without having to fork this repo.
@@ -41,6 +51,7 @@ Examples:
 
 * A simple list of repos for the [Performance Platform team](https://gist.github.com/abersager/6449384)
 * A list of repos and custom CSS for the [Mainstream team](https://gist.github.com/norm/7248264)
+* A list of repos, custom CSS and users for the [Core team](https://gist.github.com/issyl0/70cf0c8f3d0b1ccd2f6e)
 
 ## Support for other githubs
 

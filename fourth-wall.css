@@ -65,6 +65,10 @@ body {
 #pulls li.age-old {
     background: #F47738;
 }
+#pulls li.unimportant-user {
+  display: none;
+}
+
 #pulls li.thumbsup {
     background: #5c9317;
 }
