@@ -1,7 +1,8 @@
 (function () {
   "use strict";
   window.FourthWall = window.FourthWall || {};
-  window.users = window.users || {};
+  
+  FourthWall.importantUsers = [];
 
   FourthWall.getQueryParameters = function(str) {
     return str
@@ -63,7 +64,7 @@
         if (file == 'users.json') {
           var usersFile = filedata.content
           if (usersFile) {
-            users = JSON.parse(usersFile);
+            FourthWall.importantUsers = JSON.parse(usersFile);
           }
         } else if (lang == 'JavaScript' || lang == 'JSON' || lang == null) {
           var configFile = JSON.parse(filedata.content);
