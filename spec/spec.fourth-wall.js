@@ -95,6 +95,42 @@ describe("Fourth Wall", function () {
     });
   });
 
+  describe("getTeams", function () {
+    it("should return an array of teams", function () {
+      spyOn(FourthWall, "getQueryVariables").andReturn({team: "myorg/myteam"});
+      var teams = FourthWall.getTeams();
+
+      var expected = {
+        org: "myorg",
+        team: "myteam",
+        hostname: "api.github.com",
+        baseUrl: "https://api.github.com"
+      };
+      expect(teams.length).toBe(1);
+      expect(_.isEqual(teams[0], expected)).toEqual(true);
+    });
+
+    it("should return an array with a github enterprise team", function () {
+      spyOn(FourthWall, "getQueryVariables").andReturn({"github.gds_team": "myorg/myteam"});
+      var teams = FourthWall.getTeams();
+
+      expect(teams.length).toBe(1);
+      var expected = {
+        org: "myorg",
+        team: "myteam",
+        hostname: "github.gds",
+        baseUrl: "https://github.gds/api/v3"
+      };
+      expect(_.isEqual(teams[0], expected)).toEqual(true);
+    });
+
+    it("should return an empty array if no teams are set", function() {
+      spyOn(FourthWall, "getQueryVariables").andReturn({"foo": "bar"});
+      var teams = FourthWall.getTeams();
+      expect(teams).toEqual([]);
+    });
+  });
+
   describe("Repos", function () {
     describe("schedule", function () {
 
@@ -145,7 +181,6 @@ describe("Fourth Wall", function () {
   });
 
   describe("Repo", function () {
-
     describe("initialize", function () {
       it("instantiates an internal Master model", function () {
         var repo = new FourthWall.Repo();
