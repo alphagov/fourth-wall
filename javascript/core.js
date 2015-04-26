@@ -46,6 +46,10 @@
     return FourthWall.getToken(a.hostname);
   };
 
+  FourthWall.hasTeams = function() {
+    return FourthWall.getTeams().length > 0;
+  };
+
   FourthWall.getTeams = function() {
     var params = FourthWall.getQueryVariables();
     return Object.keys(params).filter(function(key) {
@@ -105,7 +109,6 @@
       url: "https://api.github.com/gists/" + FourthWall.gistId,
       done: function(result) {
         var repos = [];
-        console.log(result);
         Object.keys(result.files).forEach(function(file) {
           var fileData = result.files[file],
               language = fileData.language;
@@ -122,6 +125,69 @@
           }
         });
         return repos;
+      }
+    });
+  };
+
+  FourthWall.fetchReposFromTeams = function () {
+    var promises = [];
+
+    FourthWall.getTeams().forEach(function(team) {
+      promises.push(FourthWall.fetchReposFromTeam(team));
+    });
+
+    var d = $.Deferred();
+    $.when.apply(null, promises).done(function() {
+      var repos = [].reduce.call(arguments, FourthWall.mergeRepoArrays, []);
+      d.resolve(repos);
+    });
+
+    return d.promise();
+  };
+
+  FourthWall.mergeRepoArrays = function(repos1, repos2) {
+    var result = _.clone(repos1);
+    if (repos2) {
+      repos2.forEach(function(repo) {
+        var found = result.some(function(testRepo) {
+          return _.isEqual(repo, testRepo);
+        });
+        if (!found) {
+          result.push(repo);
+        }
+      });
+    }
+    return result;
+  };
+
+  FourthWall.fetchReposFromTeam = function(team) {
+    var d = $.Deferred();
+    FourthWall.fetchTeamId(team).done(function(teamId) {
+      FourthWall.fetchDefer({
+        url: team.baseUrl + "/teams/" + teamId + "/repos",
+        done: function (result) {
+          d.resolve(result.map(function(item) {
+            return {
+              repo: item.name,
+              userName: item.owner.login,
+              baseUrl: team.baseUrl + "/repos",
+            };
+          }));
+        }
+      });
+    });
+    return d;
+  };
+
+  FourthWall.fetchTeamId = function(team) {
+    return FourthWall.fetchDefer({
+      url: team.baseUrl + '/orgs/' + team.org + '/teams',
+      done: function (result) {
+        for (var i = 0; i < result.length; i++) {
+          if (result[i].name === team.team) {
+            return result[i].id;
+          }
+        }
       }
     });
   };

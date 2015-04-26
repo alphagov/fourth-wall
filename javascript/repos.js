@@ -41,6 +41,9 @@
       if (FourthWall.gistId) {
         promises.push(FourthWall.fetchReposFromGist());
       }
+      if (FourthWall.hasTeams()) {
+        promises.push(FourthWall.fetchReposFromTeams());
+      }
 
       $.when.apply(null, promises).done(function() {
         var allRepos = [].reduce.call(arguments, FourthWall.mergeRepoArrays, []);
