@@ -150,6 +150,7 @@
       var token = FourthWall.getTokenFromUrl(baseUrl);
       if (token !== false && token !== '') {
         xhr.setRequestHeader('Authorization', 'token ' + token);
+        xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
       }
     };
   };
