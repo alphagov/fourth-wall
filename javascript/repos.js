@@ -50,7 +50,7 @@
         var fileUrlParamsString = fileUrlParts[1];
         var queryParams;
         if(fileUrlParamsString) {
-          queryParams = FourthWall.getQueryParameters(fileUrlParamsString);
+          queryParams = FourthWall.getQueryVariables(fileUrlParamsString);
         } else {
           queryParams = {};
         }

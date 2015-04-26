@@ -4,8 +4,9 @@
   
   FourthWall.importantUsers = [];
 
-  FourthWall.getQueryParameters = function(str) {
-    return str
+  FourthWall.getQueryVariables = function(search) {
+    search = search || FourthWall._getLocationSearch();
+    return search
       .replace(/(^\?)/,'')
       .split("&")
       .reduce( function(params, n) {
@@ -14,30 +15,21 @@
         return params;
       }, {});
   };
-  FourthWall.buildQueryString = function(obj) {
-    var param_string = $.param(obj);
+
+  FourthWall.getQueryVariable = function (name, search) {
+    return FourthWall.getQueryVariables(search)[name];
+  };
+
+  FourthWall._getLocationSearch = function() {
+    return window.location.search;
+  };
+
+  FourthWall.buildQueryString = function(params) {
+    var param_string = $.param(params);
     if(param_string.length > 0) {
       param_string = "?" + param_string;
     }
     return param_string;
-  };
-
-  // http://css-tricks.com/snippets/javascript/get-url-variables/
-  FourthWall.getQueryVariable = function (variable) {
-    var query = window.location.search.substring(1);
-    var vars = query.split("&");
-    for (var i = 0; i < vars.length; i++) {
-      var pair = vars[i].split("=");
-      if (pair[0] === variable) {
-        // nasty fix for passing in urls like
-        // https://api.github.com/repos.json?ref=some-branch
-        if(pair[2]){
-          return pair[1] + '=' + pair[2];
-        }
-        return pair[1];
-      }
-    }
-    return false;
   };
 
   FourthWall.getToken = function (hostname) {

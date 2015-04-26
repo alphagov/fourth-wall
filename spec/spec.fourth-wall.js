@@ -12,10 +12,27 @@ function setupMoment(date, anObject) {
 
 describe("Fourth Wall", function () {
 
-  describe("getQueryParameters", function () {
+  describe("getQueryVariables", function () {
     it("should convert a query string into a params object", function () {
-      var query_params = FourthWall.getQueryParameters("?ref=gh-pages&token=nonsense");
+      var query_params = FourthWall.getQueryVariables("?ref=gh-pages&token=nonsense");
       expect(query_params).toEqual({'ref': 'gh-pages', 'token': 'nonsense'});
+    });
+    it("should return current location params object if no query string is provided", function() {
+      spyOn(FourthWall, '_getLocationSearch').andReturn('?foo=bar&me=you');
+      var query_params = FourthWall.getQueryVariables();
+      expect(query_params).toEqual({foo: 'bar', me: 'you'});
+    });
+  });
+  describe("getQueryVariable", function () {
+    it("should get a query parameter from the provided query string", function () {
+      spyOn(FourthWall, '_getLocationSearch').andReturn('?foo=bar');
+      var value = FourthWall.getQueryVariable('foo', '?foo=everything');
+      expect(value).toEqual('everything');
+    });
+    it("should get a query parameter from the current location", function () {
+      spyOn(FourthWall, '_getLocationSearch').andReturn('?foo=bar');
+      var value = FourthWall.getQueryVariable('foo');
+      expect(value).toEqual('bar');
     });
   });
   describe("buildQueryString", function () {
