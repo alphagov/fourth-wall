@@ -34,7 +34,7 @@
 
   FourthWall.getToken = function (hostname) {
     var token = FourthWall.getQueryVariable(hostname+'_token');
-    if (token === false && hostname == 'api.github.com') {
+    if (token === undefined && hostname == 'api.github.com') {
       token = FourthWall.getQueryVariable('token');
     }
     return token;
@@ -77,55 +77,66 @@
     }
   }
 
-  FourthWall.parseGistData = function (gistData, that) {
-    var config = [];
-    for (var file in gistData.data.files) {
-      if (gistData.data.files.hasOwnProperty(file)) {
-        var filedata = gistData.data.files[file],
-        lang = filedata.language;
-
-        if (file == 'users.json') {
-          var usersFile = filedata.content
-          if (usersFile) {
-            FourthWall.importantUsers = JSON.parse(usersFile);
-          }
-        } else if (lang == 'JavaScript' || lang == 'JSON' || lang == null) {
-          var configFile = JSON.parse(filedata.content);
-          if (configFile) {
-            config.push(configFile);
-          }
-        } else if (lang == 'CSS') {
-          var $custom_css = $('<style>');
-          $custom_css.text( filedata.content );
-          $('head').append( $custom_css );
+  FourthWall.fetchReposFromFileUrl = function () {
+    // e.g. https://api.github.com/repos/roc/deploy-lag-radiator/contents/repos/performance-platform.json?ref=gh-pages
+    return FourthWall.fetchDefer({
+      url: FourthWall.fileUrl,
+      done: function(result) {
+        var repos = [];
+        if (result.content) {
+          repos = JSON.parse(
+            atob(result.content)
+          ).map(function (item) {
+            // map to ensure gist style keys present
+            // we extend the item to ensure any provided baseUrls are kept
+            return $.extend(item, {
+              'userName': item.owner || item.userName,
+              'repo': item.name ||  item.repo
+            });
+          });
         }
+        return repos;
       }
-    }
-
-    if (config.length > 0) {
-      that.reset.call(that, config[0]);
-    }
+    });
   };
 
-  FourthWall.parseGithubFileData = function (data, that) {
-
-    // base64 decode the bloody thing
-    if (!data.content) {
-      return false;
-    }
-
-    var contents = JSON.parse(
-      atob(data.content)
-    ).map(function (item) {
-      // map to ensure gist style keys present
-      // we extend the item to ensure any provided baseUrls are kept
-      return $.extend(item, {
-        'userName': item.owner || item.userName,
-        'repo': item.name ||  item.repo
-      });
+  FourthWall.fetchReposFromGist = function () {
+    return FourthWall.fetchDefer({
+      url: "https://api.github.com/gists/" + FourthWall.gistId,
+      done: function(result) {
+        var repos = [];
+        console.log(result);
+        Object.keys(result.files).forEach(function(file) {
+          var fileData = result.files[file],
+              language = fileData.language;
+          if (file == "users.json") {
+            if (fileData.content) {
+              FourthWall.importantUsers = JSON.parse(fileData.content);
+            }
+          } else if ($.inArray(language, ['JavaScript', 'JSON', null])) {
+            repos = JSON.parse(fileData.content);
+          } else if (language === "CSS") {
+            var $custom_css = $('<style>');
+            $custom_css.text( filedata.content );
+            $('head').append( $custom_css );
+          }
+        });
+        return repos;
+      }
     });
+  };
 
-    that.reset.call(that, contents);
+  FourthWall.fetchDefer = function(options) {
+    var d = $.Deferred();
+    $.ajax({
+      type: "GET",
+      beforeSend: setupAuthentication(options.url),
+      url: options.url,
+    }).done(function(result) {
+      d.resolve(options.done(result));
+    }).fail(d.reject);
+
+    return d.promise();
   };
 
   FourthWall.overrideFetch = function(url) {

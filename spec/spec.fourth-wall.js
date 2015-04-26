@@ -69,7 +69,6 @@ describe("Fourth Wall", function () {
     it("falls back to default token for github.com", function() {
       FourthWall.getQueryVariable.plan = function(name) {
         return {
-          "api.github.com_token": false,
           "token": "default-token",
           "github.gds_token": "gds-token"
         }[name];
@@ -128,6 +127,33 @@ describe("Fourth Wall", function () {
       spyOn(FourthWall, "getQueryVariables").andReturn({"foo": "bar"});
       var teams = FourthWall.getTeams();
       expect(teams).toEqual([]);
+    });
+  });
+
+  describe("mergeRepoArrays", function () {
+    it("should merge two repo arrays", function () {
+      var repos1 = [{userName: "example", repo: "example"}],
+          repos2 = [{userName: "example", repo: "another"}];
+
+      var result = FourthWall.mergeRepoArrays(repos1, repos2);
+
+      var expected = [
+        {userName: "example", repo: "example"},
+        {userName: "example", repo: "another"},
+      ];
+      expect(_.isEqual(result, expected)).toEqual(true);
+    });
+
+    it("should not duplicate repos", function () {
+      var repos1 = [{userName: "example", repo: "example"}],
+          repos2 = [{userName: "example", repo: "example"}];
+
+      var result = FourthWall.mergeRepoArrays(repos1, repos2);
+
+      var expected = [
+        {userName: "example", repo: "example"},
+      ];
+      expect(_.isEqual(result, expected)).toEqual(true);
     });
   });
 
