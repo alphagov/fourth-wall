@@ -62,11 +62,11 @@
             if (fileData.content) {
               FourthWall.importantUsers = JSON.parse(fileData.content);
             }
-          } else if ($.inArray(language, ['JavaScript', 'JSON', null])) {
+          } else if ($.inArray(language, ['JavaScript', 'JSON', null]) !== -1) {
             repos = JSON.parse(fileData.content);
           } else if (language === "CSS") {
             var $custom_css = $('<style>');
-            $custom_css.text( filedata.content );
+            $custom_css.text( fileData.content );
             $('head').append( $custom_css );
           }
         });
