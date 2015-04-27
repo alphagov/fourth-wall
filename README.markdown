@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/alphagov/fourth-wall.png)](https://travis-ci.org/alphagov/fourth-wall)
 
-Pure client-side pull request and build status monitor for Github repositories that use Travis.
+Pure client-side pull request and build status monitor for Github repositories.
 
 ![Screenshot of Fourth Wall](https://cloud.githubusercontent.com/assets/355033/6211416/6341db4e-b5d1-11e4-99d2-57b80a400a41.png)
 
@@ -14,16 +14,20 @@ The project is hosted through Github pages:
 You will need to have a Github API token with access to the relevant
 repositories if you don't already have one. To do that, visit
 https://github.com/settings/applications and create a new personal
-access token.
+access token. To use the `team` parameter you will need to give the token
+the `read:org` permission.
 
 The following query parameters are required:
  - `token`: Your Github API token
- - `gist`: ID of the Gist containing the list of repositories to monitor
+
+ At least one of:
+ - `gist`: ID of the Gist containing the list of repositories to monitor.
+ - `team`: Github organisation and team name to build the list of repositories in the form `{org}/{team}` (requires the [`read:org`](https://developer.github.com/v3/orgs/) permission).
+ - `file`: URL of a file in a Github repo that contains the list of repositories.
 
 Optional query parameters:
  - `listinterval`: Update interval for the list of monitored repos in seconds (default: 900)
  - `interval`: Update interval for monitored repos in seconds (default: 60)
-
 
 The Gist should contain one or more JSON files with this syntax:
 ```json
@@ -72,3 +76,6 @@ An example enterprise repository.
   }
 ]
 ```
+
+To load repositories from a team on an enterprise instance you must prefix the
+hostname to the team url parameter as with the token `<hostname>_team`.
