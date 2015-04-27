@@ -130,30 +130,32 @@ describe("Fourth Wall", function () {
     });
   });
 
-  describe("mergeRepoArrays", function () {
-    it("should merge two repo arrays", function () {
-      var repos1 = [{userName: "example", repo: "example"}],
-          repos2 = [{userName: "example", repo: "another"}];
+  describe("FetchRepos", function () {
+    describe("mergeRepoArrays", function () {
+      it("should merge two repo arrays", function () {
+        var repos1 = [{userName: "example", repo: "example"}],
+            repos2 = [{userName: "example", repo: "another"}];
 
-      var result = FourthWall.mergeRepoArrays(repos1, repos2);
+        var result = FourthWall.FetchRepos.mergeRepoArrays(repos1, repos2);
 
-      var expected = [
-        {userName: "example", repo: "example"},
-        {userName: "example", repo: "another"},
-      ];
-      expect(_.isEqual(result, expected)).toEqual(true);
-    });
+        var expected = [
+          {userName: "example", repo: "example"},
+          {userName: "example", repo: "another"},
+        ];
+        expect(_.isEqual(result, expected)).toEqual(true);
+      });
 
-    it("should not duplicate repos", function () {
-      var repos1 = [{userName: "example", repo: "example"}],
-          repos2 = [{userName: "example", repo: "example"}];
+      it("should not duplicate repos", function () {
+        var repos1 = [{userName: "example", repo: "example"}],
+            repos2 = [{userName: "example", repo: "example"}];
 
-      var result = FourthWall.mergeRepoArrays(repos1, repos2);
+        var result = FourthWall.FetchRepos.mergeRepoArrays(repos1, repos2);
 
-      var expected = [
-        {userName: "example", repo: "example"},
-      ];
-      expect(_.isEqual(result, expected)).toEqual(true);
+        var expected = [
+          {userName: "example", repo: "example"},
+        ];
+        expect(_.isEqual(result, expected)).toEqual(true);
+      });
     });
   });
 

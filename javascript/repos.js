@@ -32,24 +32,7 @@
     },
 
     updateList: function() {
-      var that = this;
-      var promises = [];
-
-      if (FourthWall.fileUrl) {
-        promises.push(FourthWall.fetchReposFromFileUrl());
-      }
-      if (FourthWall.gistId) {
-        promises.push(FourthWall.fetchReposFromGist());
-      }
-      if (FourthWall.hasTeams()) {
-        promises.push(FourthWall.fetchReposFromTeams());
-      }
-
-      $.when.apply(null, promises).done(function() {
-        var allRepos = [].reduce.call(arguments, FourthWall.mergeRepoArrays, []);
-        that.reset.call(that, allRepos);
-      });
-
+      FourthWall.FetchRepos.fetchFromEverywhere().done(this.reset.bind(this));
     },
 
     fetch: function () {
