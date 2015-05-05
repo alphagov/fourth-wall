@@ -27,6 +27,22 @@
     return d;
   };
 
+  // exposed so that it can be tested
+  FourthWall.FetchRepos.mergeRepoArrays = function(repos1, repos2) {
+    var result = _.clone(repos1);
+    if (repos2) {
+      repos2.forEach(function(repo) {
+        var found = result.some(function(testRepo) {
+          return _.isEqual(repo, testRepo);
+        });
+        if (!found) {
+          result.push(repo);
+        }
+      });
+    }
+    return result;
+  };
+
   var fetchReposFromFileUrl = function () {
     // e.g. https://api.github.com/repos/roc/deploy-lag-radiator/contents/repos/performance-platform.json?ref=gh-pages
     return FourthWall.fetchDefer({
@@ -121,22 +137,6 @@
         }
       }
     });
-  };
-
-  // exposed so that it can be tested
-  FourthWall.FetchRepos.mergeRepoArrays = function(repos1, repos2) {
-    var result = _.clone(repos1);
-    if (repos2) {
-      repos2.forEach(function(repo) {
-        var found = result.some(function(testRepo) {
-          return _.isEqual(repo, testRepo);
-        });
-        if (!found) {
-          result.push(repo);
-        }
-      });
-    }
-    return result;
   };
 
 }());
