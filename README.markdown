@@ -35,6 +35,9 @@ The Gist should contain one or more JSON files with this syntax:
 ]
 ```
 
+You must make sure you set the language of the Gist to JSON as it will
+default to Text, which will not work.
+
 Optionally, the Gist can contain a JSON file named `users`, to list
 users the team cares about. Fourth Wall will then only display PRs
 across your tracked apps opened by these users. Syntax:
