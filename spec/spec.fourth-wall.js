@@ -12,10 +12,27 @@ function setupMoment(date, anObject) {
 
 describe("Fourth Wall", function () {
 
-  describe("getQueryParameters", function () {
+  describe("getQueryVariables", function () {
     it("should convert a query string into a params object", function () {
-      var query_params = FourthWall.getQueryParameters("?ref=gh-pages&token=nonsense");
+      var query_params = FourthWall.getQueryVariables("?ref=gh-pages&token=nonsense");
       expect(query_params).toEqual({'ref': 'gh-pages', 'token': 'nonsense'});
+    });
+    it("should return current location params object if no query string is provided", function() {
+      spyOn(FourthWall, '_getLocationSearch').andReturn('?foo=bar&me=you');
+      var query_params = FourthWall.getQueryVariables();
+      expect(query_params).toEqual({foo: 'bar', me: 'you'});
+    });
+  });
+  describe("getQueryVariable", function () {
+    it("should get a query parameter from the provided query string", function () {
+      spyOn(FourthWall, '_getLocationSearch').andReturn('?foo=bar');
+      var value = FourthWall.getQueryVariable('foo', '?foo=everything');
+      expect(value).toEqual('everything');
+    });
+    it("should get a query parameter from the current location", function () {
+      spyOn(FourthWall, '_getLocationSearch').andReturn('?foo=bar');
+      var value = FourthWall.getQueryVariable('foo');
+      expect(value).toEqual('bar');
     });
   });
   describe("buildQueryString", function () {
@@ -52,7 +69,6 @@ describe("Fourth Wall", function () {
     it("falls back to default token for github.com", function() {
       FourthWall.getQueryVariable.plan = function(name) {
         return {
-          "api.github.com_token": false,
           "token": "default-token",
           "github.gds_token": "gds-token"
         }[name];
@@ -75,6 +91,71 @@ describe("Fourth Wall", function () {
     it("extracts enterprise github hostname", function() {
       FourthWall.getTokenFromUrl("http://github.gds/foo/bar");
       expect(FourthWall.getToken).toHaveBeenCalledWith("github.gds");
+    });
+  });
+
+  describe("getTeams", function () {
+    it("should return an array of teams", function () {
+      spyOn(FourthWall, "getQueryVariables").andReturn({team: "myorg/myteam"});
+      var teams = FourthWall.getTeams();
+
+      var expected = {
+        org: "myorg",
+        team: "myteam",
+        hostname: "api.github.com",
+        baseUrl: "https://api.github.com"
+      };
+      expect(teams.length).toBe(1);
+      expect(_.isEqual(teams[0], expected)).toEqual(true);
+    });
+
+    it("should return an array with a github enterprise team", function () {
+      spyOn(FourthWall, "getQueryVariables").andReturn({"github.gds_team": "myorg/myteam"});
+      var teams = FourthWall.getTeams();
+
+      expect(teams.length).toBe(1);
+      var expected = {
+        org: "myorg",
+        team: "myteam",
+        hostname: "github.gds",
+        baseUrl: "https://github.gds/api/v3"
+      };
+      expect(_.isEqual(teams[0], expected)).toEqual(true);
+    });
+
+    it("should return an empty array if no teams are set", function() {
+      spyOn(FourthWall, "getQueryVariables").andReturn({"foo": "bar"});
+      var teams = FourthWall.getTeams();
+      expect(teams).toEqual([]);
+    });
+  });
+
+  describe("FetchRepos", function () {
+    describe("mergeRepoArrays", function () {
+      it("should merge two repo arrays", function () {
+        var repos1 = [{userName: "example", repo: "example"}],
+            repos2 = [{userName: "example", repo: "another"}];
+
+        var result = FourthWall.FetchRepos.mergeRepoArrays(repos1, repos2);
+
+        var expected = [
+          {userName: "example", repo: "example"},
+          {userName: "example", repo: "another"},
+        ];
+        expect(_.isEqual(result, expected)).toEqual(true);
+      });
+
+      it("should not duplicate repos", function () {
+        var repos1 = [{userName: "example", repo: "example"}],
+            repos2 = [{userName: "example", repo: "example"}];
+
+        var result = FourthWall.FetchRepos.mergeRepoArrays(repos1, repos2);
+
+        var expected = [
+          {userName: "example", repo: "example"},
+        ];
+        expect(_.isEqual(result, expected)).toEqual(true);
+      });
     });
   });
 
@@ -128,7 +209,6 @@ describe("Fourth Wall", function () {
   });
 
   describe("Repo", function () {
-
     describe("initialize", function () {
       it("instantiates an internal Master model", function () {
         var repo = new FourthWall.Repo();
