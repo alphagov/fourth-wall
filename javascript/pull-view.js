@@ -51,6 +51,13 @@
         commentCount = commentCount + this.model.info.get('review_comments');
       }
 
+      console.log(this.model.get('assignee'));
+
+      var assignee = "";
+      if (this.model.get('assignee')) {
+        assignee = ' - under review by ' + this.model.get('assignee').login;
+      }
+
       this.$el.html([
         '<img class="avatar" src="', this.model.get('user').avatar_url, '" />',
         statusString,
@@ -67,7 +74,7 @@
         ' (#',
         this.model.get('number'),
         ')',
-        '</a></p>',
+        '</a>' + assignee + '</p>',
         '<p class="comments"> ' + commentCount + " comment" + suffix + '</p>',
       ].join(''));
     },
