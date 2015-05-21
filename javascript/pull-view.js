@@ -51,11 +51,10 @@
         commentCount = commentCount + this.model.info.get('review_comments');
       }
 
-      console.log(this.model.get('assignee'));
-
       var assignee = "";
       if (this.model.get('assignee')) {
-        assignee = ' - under review by ' + this.model.get('assignee').login;
+        assignee = ' under review by ' + this.model.get('assignee').login;
+        this.$el.addClass("under-review");
       }
 
       this.$el.html([
