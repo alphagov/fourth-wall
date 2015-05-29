@@ -59,6 +59,15 @@ body {
 #pulls li.failed {
     background: #B10E1E;
 }
+#pulls li.age-fresh.under-review {
+  background: #0C56E8;
+}
+#pulls li.age-aging.under-review {
+    background: #370CE8;
+}
+#pulls li.age-old.under-review {
+    background: #7E0DFF;
+}
 #pulls li.age-aging {
     background: #f4ab38;
 }
