@@ -76,7 +76,10 @@
               language = fileData.language;
           if (file == "users.json") {
             if (fileData.content) {
-              FourthWall.importantUsers = JSON.parse(fileData.content);
+              FourthWall.importantUsers = $.merge(
+                FourthWall.importantUsers,
+                JSON.parse(fileData.content)
+              );
             }
           } else if ($.inArray(language, ['JavaScript', 'JSON', null]) !== -1) {
             repos = JSON.parse(fileData.content);
@@ -121,6 +124,15 @@
               baseUrl: team.baseUrl + "/repos",
             };
           }));
+        }
+      });
+
+      FourthWall.fetchDefer({
+        url: team.baseUrl + "/teams/" + teamId + "/members",
+        done: function (result) {
+          result.forEach(function(member) {
+            FourthWall.importantUsers.push(member.login)
+          });
         }
       });
     });
