@@ -22,12 +22,13 @@ The following query parameters are required:
 
  At least one of:
  - `gist`: ID of the Gist containing the list of repositories to monitor.
- - `team`: Github organisation and team name to build the list of repositories in the form `{org}/{team}` (requires the [`read:org`](https://developer.github.com/v3/orgs/) permission).
+ - `team`: Github organisation and team name to build the list of repositories in the form `{org}/{team}` (requires the [`read:org`](https://developer.github.com/v3/orgs/) permission). (note, by default it will only show PRs by members of that team)
  - `file`: URL of a file in a Github repo that contains the list of repositories.
 
 Optional query parameters:
  - `listinterval`: Update interval for the list of monitored repos in seconds (default: 900)
  - `interval`: Update interval for monitored repos in seconds (default: 60)
+ - `showallusers`: Show PRs from all users, even if config limits the users.
 
 The Gist should contain one or more JSON files with this syntax:
 ```json

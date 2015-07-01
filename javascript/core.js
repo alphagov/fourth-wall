@@ -117,6 +117,10 @@
     }
   };
 
+  FourthWall.showAllUsers = stripSlash(
+    FourthWall.getQueryVariable('show_all_users')
+  );
+
   FourthWall.gistId = stripSlash(
     FourthWall.getQueryVariable('gist')
   );

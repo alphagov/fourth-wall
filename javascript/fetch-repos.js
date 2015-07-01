@@ -122,6 +122,15 @@
           }));
         }
       });
+
+      FourthWall.fetchDefer({
+        url: team.baseUrl + "/teams/" + teamId + "/members",
+        done: function (result) {
+          FourthWall.importantUsers = result.map(function(item) {
+            return item.login
+          });
+        }
+      });
     });
     return d;
   };
