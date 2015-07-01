@@ -128,13 +128,16 @@
 
   var fetchTeamId = function(team) {
     return FourthWall.fetchDefer({
-      url: team.baseUrl + '/orgs/' + team.org + '/teams',
+      // team.list results are paginated, try and get as many in the first page
+      // as possible to map slug-to-id (github max is 100 per-page)
+      url: team.baseUrl + '/orgs/' + team.org + '/teams?per_page=100',
       done: function (result) {
         for (var i = 0; i < result.length; i++) {
           if (result[i].slug === team.team) {
             return result[i].id;
           }
         }
+        throw "Couldn't map team '" + team.team + "' to an ID"
       }
     });
   };
