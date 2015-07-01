@@ -28,6 +28,7 @@ The following query parameters are required:
 Optional query parameters:
  - `listinterval`: Update interval for the list of monitored repos in seconds (default: 900)
  - `interval`: Update interval for monitored repos in seconds (default: 60)
+ - `showallusers`: Show PRs from all users, even if config limits the users
 
 The Gist should contain one or more JSON files with this syntax:
 ```json
