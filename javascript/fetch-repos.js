@@ -131,7 +131,7 @@
       url: team.baseUrl + '/orgs/' + team.org + '/teams',
       done: function (result) {
         for (var i = 0; i < result.length; i++) {
-          if (result[i].name === team.team) {
+          if (result[i].slug === team.team) {
             return result[i].id;
           }
         }
