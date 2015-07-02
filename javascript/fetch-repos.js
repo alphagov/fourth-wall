@@ -111,7 +111,7 @@
     var d = $.Deferred();
     fetchTeamId(team).done(function(teamId) {
       FourthWall.fetchDefer({
-        url: team.baseUrl + "/teams/" + teamId + "/repos",
+        url: team.baseUrl + "/teams/" + teamId + "/repos?per_page=100",
         done: function (result) {
           d.resolve(result.map(function(item) {
             return {
