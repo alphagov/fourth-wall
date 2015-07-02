@@ -111,7 +111,8 @@
     var d = $.Deferred();
     fetchTeamId(team).done(function(teamId) {
       FourthWall.fetchDefer({
-        url: team.baseUrl + "/teams/" + teamId + "/repos?per_page=100",
+        url: team.baseUrl + "/teams/" + teamId + "/repos",
+        data: { per_page: 100 },
         done: function (result) {
           d.resolve(result.map(function(item) {
             return {
@@ -130,7 +131,8 @@
     return FourthWall.fetchDefer({
       // team.list results are paginated, try and get as many in the first page
       // as possible to map slug-to-id (github max is 100 per-page)
-      url: team.baseUrl + '/orgs/' + team.org + '/teams?per_page=100',
+      url: team.baseUrl + '/orgs/' + team.org + '/teams',
+      data: { per_page: 100 },
       done: function (result) {
         for (var i = 0; i < result.length; i++) {
           if (result[i].slug === team.team) {
