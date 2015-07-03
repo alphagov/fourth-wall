@@ -28,6 +28,7 @@ The following query parameters are required:
 Optional query parameters:
  - `listinterval`: Update interval for the list of monitored repos in seconds (default: 900)
  - `interval`: Update interval for monitored repos in seconds (default: 60)
+ - `filterusers`: Only show PRs from specific users, if set in config (default: false)
 
 The Gist should contain one or more JSON files with this syntax:
 ```json
@@ -43,8 +44,8 @@ You must make sure you set the language of the Gist to JSON as it will
 default to Text, which will not work.
 
 Optionally, the Gist can contain a JSON file named `users`, to list
-users the team cares about. Fourth Wall will then only display PRs
-across your tracked apps opened by these users. Syntax:
+users the team cares about. Fourth Wall can then display PRs
+across your tracked apps opened by these users, if the `filterusers` param is set. Syntax:
 ```json
 [
   "username0",
