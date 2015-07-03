@@ -87,6 +87,7 @@
       type: "GET",
       beforeSend: setupAuthentication(options.url),
       url: options.url,
+      data: options.data
     }).done(function(result) {
       d.resolve(options.done(result));
     }).fail(d.reject);
