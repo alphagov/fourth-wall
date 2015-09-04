@@ -33,7 +33,10 @@
     if (repos2) {
       repos2.forEach(function(repo) {
         var found = result.some(function(testRepo) {
-          return _.isEqual(repo, testRepo);
+          return _.isEqual(
+            { userName: repo.userName, repo: repo.repo, baseUrl: repo.baseUrl || 'https://api.github.com/repos' },
+            { userName: testRepo.userName, repo: testRepo.repo, baseUrl: testRepo.baseUrl || 'https://api.github.com/repos' }
+          );
         });
         if (!found) {
           result.push(repo);

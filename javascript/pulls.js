@@ -10,6 +10,7 @@
       this.baseUrl = options.baseUrl;
       this.userName = options.userName;
       this.repo = options.repo;
+      this.important = options.important;
     },
 
     url: function () {

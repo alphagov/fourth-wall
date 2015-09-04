@@ -25,6 +25,10 @@
         this.$el.addClass('unimportant-user');
       }
 
+      if (!this.model.collection.important) {
+        this.$el.addClass('unimportant-repo');
+      }
+
       if (this.model.comment.get('thumbsup')) {
         this.$el.addClass("thumbsup");
       }
