@@ -53,6 +53,11 @@ across your tracked apps opened by these users, if the `filterusers` param is se
 ]
 ```
 
+Optionally, entries may also contain ```"important": true``` to indicate that a
+repository is important.  This has an effect only when the `filterusers` param
+is set: PRs on important repositories will always be displayed, even when they
+weren't opened by one of the listed users.
+
 If the Gist contains a file with the language set to `CSS`, it will be injected
 into a `<style>` block in the document head, so you can override the default
 styling without having to fork this repo.

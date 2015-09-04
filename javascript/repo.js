@@ -21,7 +21,8 @@
       this.pulls = new FourthWall.Pulls([], {
         baseUrl: this.get('baseUrl'),
         userName: this.get('userName'),
-        repo: this.get('repo')
+        repo: this.get('repo'),
+        important: this.get('important')
       });
 
       this.pulls.on('reset add remove', function () {
