@@ -11,7 +11,16 @@
       .split("&")
       .reduce( function(params, n) {
         n = n.split("=");
-        params[n[0]] = n[1];
+        var arrayKey = /^(.*)\[\]$/.exec(n[0]);
+        if (arrayKey) {
+          if (params[arrayKey[1]] instanceof Array) {
+            params[arrayKey[1]].push(n[1]);
+          } else {
+            params[arrayKey[1]] = [n[1]];
+          }
+        } else {
+          params[n[0]] = n[1];
+        }
         return params;
       }, {});
   };

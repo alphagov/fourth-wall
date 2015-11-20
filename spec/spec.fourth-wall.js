@@ -22,6 +22,10 @@ describe("Fourth Wall", function () {
       var query_params = FourthWall.getQueryVariables();
       expect(query_params).toEqual({foo: 'bar', me: 'you'});
     });
+    it("should handle array parameters with [] keys", function () {
+      var query_params = FourthWall.getQueryVariables("?ref=gh-pages&token[]=nonsense&token[]=foo");
+      expect(query_params).toEqual({'ref': 'gh-pages', 'token': ['nonsense', 'foo']});
+    });
   });
   describe("getQueryVariable", function () {
     it("should get a query parameter from the provided query string", function () {
