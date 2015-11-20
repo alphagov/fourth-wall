@@ -106,7 +106,7 @@ describe("Fourth Wall", function () {
         baseUrl: "https://api.github.com"
       };
       expect(teams.length).toBe(1);
-      expect(_.isEqual(teams[0], expected)).toEqual(true);
+      expect(teams[0]).toEqual(expected);
     });
 
     it("should return an array with a github enterprise team", function () {
@@ -120,7 +120,7 @@ describe("Fourth Wall", function () {
         hostname: "github.gds",
         baseUrl: "https://github.gds/api/v3"
       };
-      expect(_.isEqual(teams[0], expected)).toEqual(true);
+      expect(teams[0]).toEqual(expected);
     });
 
     it("should return an empty array if no teams are set", function() {
