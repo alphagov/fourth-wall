@@ -18,14 +18,18 @@ access token. To use the `team` parameter you will need to give the token
 the `read:org` permission.
 
 The following query parameters are required:
+
  - `token`: Your Github API token
 
- At least one of:
+At least one of:
+
  - `gist`: ID of the Gist containing the list of repositories to monitor.
  - `team`: Github organisation and team name to build the list of repositories in the form `{org}/{team}` (requires the [`read:org`](https://developer.github.com/v3/orgs/) permission).
+ - `team[]`: Given multiple times allows for more than one team to be used to build the list of repositories.
  - `file`: URL of a file in a Github repo that contains the list of repositories.
 
 Optional query parameters:
+
  - `listinterval`: Update interval for the list of monitored repos in seconds (default: 900)
  - `interval`: Update interval for monitored repos in seconds (default: 60)
  - `filterusers`: Only show PRs from specific users, if set in config (default: false)
@@ -87,4 +91,5 @@ An example enterprise repository.
 ```
 
 To load repositories from a team on an enterprise instance you must prefix the
-hostname to the team url parameter as with the token `<hostname>_team`.
+hostname to the team url parameter as with the token `<hostname>_team` (or
+`<hostname>_team[]` for multiple teams).

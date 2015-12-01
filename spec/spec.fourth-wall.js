@@ -22,6 +22,10 @@ describe("Fourth Wall", function () {
       var query_params = FourthWall.getQueryVariables();
       expect(query_params).toEqual({foo: 'bar', me: 'you'});
     });
+    it("should handle array parameters with [] keys", function () {
+      var query_params = FourthWall.getQueryVariables("?ref=gh-pages&token[]=nonsense&token[]=foo");
+      expect(query_params).toEqual({'ref': 'gh-pages', 'token': ['nonsense', 'foo']});
+    });
   });
   describe("getQueryVariable", function () {
     it("should get a query parameter from the provided query string", function () {
@@ -106,7 +110,7 @@ describe("Fourth Wall", function () {
         baseUrl: "https://api.github.com"
       };
       expect(teams.length).toBe(1);
-      expect(_.isEqual(teams[0], expected)).toEqual(true);
+      expect(teams[0]).toEqual(expected);
     });
 
     it("should return an array with a github enterprise team", function () {
@@ -120,7 +124,38 @@ describe("Fourth Wall", function () {
         hostname: "github.gds",
         baseUrl: "https://github.gds/api/v3"
       };
-      expect(_.isEqual(teams[0], expected)).toEqual(true);
+      expect(teams[0]).toEqual(expected);
+    });
+
+    it("should handle multiple teams for a given instance", function() {
+      spyOn(FourthWall, "getQueryVariables").andReturn({"team": ["org1/team1", "org2/team2"], "github.gds_team": ["myorg/myteam", "otherorg/team2"]});
+      var teams = FourthWall.getTeams();
+
+      expect(teams.length).toBe(4);
+      expect(teams[0]).toEqual({
+        org: "org1",
+        team: "team1",
+        hostname: "api.github.com",
+        baseUrl: "https://api.github.com"
+      });
+      expect(teams[1]).toEqual({
+        org: "org2",
+        team: "team2",
+        hostname: "api.github.com",
+        baseUrl: "https://api.github.com"
+      });
+      expect(teams[2]).toEqual({
+        org: "myorg",
+        team: "myteam",
+        hostname: "github.gds",
+        baseUrl: "https://github.gds/api/v3"
+      });
+      expect(teams[3]).toEqual({
+        org: "otherorg",
+        team: "team2",
+        hostname: "github.gds",
+        baseUrl: "https://github.gds/api/v3"
+      });
     });
 
     it("should return an empty array if no teams are set", function() {
