@@ -77,10 +77,17 @@
         Object.keys(result.files).forEach(function(file) {
           var fileData = result.files[file],
               language = fileData.language;
-          if (file == "users.json") {
+          if (file === "users.json") {
             if (fileData.content) {
               FourthWall.importantUsers = $.merge(
                 FourthWall.importantUsers,
+                JSON.parse(fileData.content)
+              );
+            }
+          } else if (file === "ignored-repos.json") {
+            if (fileData.content) {
+              FourthWall.ignoredRepos = $.merge(
+                FourthWall.ignoredRepos,
                 JSON.parse(fileData.content)
               );
             }
@@ -92,7 +99,13 @@
             $('head').append( $custom_css );
           }
         });
-        return repos;
+        return repos.filter(function(repo) {
+          return FourthWall.ignoredRepos.findIndex(function(ignoredRepo) {
+            return repo.baseUrl == ignoredRepo.baseUrl
+                && repo.userName == ignoredRepo.userName
+                && repo.repo == ignoredRepo.repo;
+          }) == -1; // only return repos if they're not in the ignoredRepos list
+        });
       }
     });
   };
