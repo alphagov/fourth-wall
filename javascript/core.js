@@ -2,8 +2,6 @@
   "use strict";
   window.FourthWall = window.FourthWall || {};
   
-  FourthWall.importantUsers = [];
-
   FourthWall.getQueryVariables = function(search) {
     search = search || FourthWall._getLocationSearch();
     return search
@@ -145,5 +143,6 @@
     FourthWall.getQueryVariable('file')
   );
   FourthWall.importantUsers = [];
+  FourthWall.ignoredRepos = [];
 
 })();

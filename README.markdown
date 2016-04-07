@@ -47,7 +47,20 @@ The Gist should contain one or more JSON files with this syntax:
 You must make sure you set the language of the Gist to JSON as it will
 default to Text, which will not work.
 
-Optionally, the Gist can contain a JSON file named `users`, to list
+Optionally, entries may also contain ```"important": true``` to indicate that a
+repository is important.  This has an effect only when the `filterusers` param
+is set: PRs on important repositories will always be displayed, even when they
+weren't opened by one of the listed users.
+
+## Custom styling
+
+If the Gist contains a file with the language set to `CSS`, it will be injected
+into a `<style>` block in the document head, so you can override the default
+styling without having to fork this repo.
+
+## Important users
+
+Optionally, the Gist can contain a JSON file named `users.json`, to list
 users the team cares about. Fourth Wall can then display PRs
 across your tracked apps opened by these users, if the `filterusers` param is set. Syntax:
 ```json
@@ -57,20 +70,12 @@ across your tracked apps opened by these users, if the `filterusers` param is se
 ]
 ```
 
-Optionally, entries may also contain ```"important": true``` to indicate that a
-repository is important.  This has an effect only when the `filterusers` param
-is set: PRs on important repositories will always be displayed, even when they
-weren't opened by one of the listed users.
+## Ignoring repositories
 
-If the Gist contains a file with the language set to `CSS`, it will be injected
-into a `<style>` block in the document head, so you can override the default
-styling without having to fork this repo.
-
-Examples:
-
-* A simple list of repos for the [Performance Platform team](https://gist.github.com/abersager/6449384)
-* A list of repos and custom CSS for the [Mainstream team](https://gist.github.com/norm/7248264)
-* A list of repos, custom CSS and users for the [Core team](https://gist.github.com/issyl0/70cf0c8f3d0b1ccd2f6e)
+The Gist can also contain a JSON file named `ignored-repos.json`. This file should be
+formatted the same as the repository list file but rather than including the repositories
+listed they will be ignored. This can be useful if you're building your repository list
+teams but would like to prevent your dashboard user from seeing some of them.
 
 ## Support for other githubs
 
@@ -93,3 +98,9 @@ An example enterprise repository.
 To load repositories from a team on an enterprise instance you must prefix the
 hostname to the team url parameter as with the token `<hostname>_team` (or
 `<hostname>_team[]` for multiple teams).
+
+## Examples
+
+* A simple list of repos for the [Performance Platform team](https://gist.github.com/abersager/6449384)
+* A list of repos and custom CSS for the [Mainstream team](https://gist.github.com/norm/7248264)
+* A list of repos, custom CSS and users for the [Core team](https://gist.github.com/issyl0/70cf0c8f3d0b1ccd2f6e)
