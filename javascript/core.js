@@ -1,7 +1,7 @@
 (function () {
   "use strict";
   window.FourthWall = window.FourthWall || {};
-  
+
   FourthWall.importantUsers = [];
 
   FourthWall.getQueryVariables = function(search) {
@@ -145,5 +145,7 @@
     FourthWall.getQueryVariable('file')
   );
   FourthWall.importantUsers = [];
+
+  FourthWall.showLables = FourthWall.getQueryVariable('labels') === 'true';
 
 })();
