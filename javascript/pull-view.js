@@ -72,22 +72,22 @@
         }
       }
 
-      var baseSync = "";
-      if (this.model.master_head.get('object') &&
+      var baseSyncHTML = "";
+      if (this.model.branchHead.get('object') &&
           this.model.get('base')) {
 
-          if (this.model.master_head.get('object').sha === this.model.get('base').sha) {
-            baseSync = " [Ready]";
+          if (this.model.branchHead.get('object').sha === this.model.get('base').sha) {
+            baseSyncHTML = '<div class="base-sync base-sync-ok">Up-to-date</div>';
           }
           else {
-            baseSync = " [Needs Rebasing]";
+            baseSyncHTML = '<div class="base-sync base-sync-rebase">Needs Rebase</div>';
           }
       }
 
       this.$el.html([
         '<img class="avatar" src="', this.model.get('user').avatar_url, '" />',
         statusString,
-        '<h2>', this.model.get('repo'), baseSync, '</h2>',
+        '<h2>#', this.model.get('number'), ' - ', this.model.get('repo'), '</h2>',
         '<div class="elapsed-time" data-created-at="',
         this.model.get('created_at'),
         '">',
@@ -102,7 +102,8 @@
         this.model.get('number'),
         ')',
         '</a>' + assignee + '</p>',
-        '<p class="comments"> ' + commentCount + " comment" + suffix + '</p>',
+        baseSyncHTML,
+        '<div class="comments"> - ' + commentCount + " comment" + suffix + '</div>',
       ].join(''));
     },
 

@@ -21,7 +21,7 @@
     },
 
     fetch: function() {
-      return FourthWall.overrideFetch.call(this, this.get('baseUrl'));
+      return FourthWall.overrideFetch.call(this, this.url());
     },
 
     parse: function (response) {

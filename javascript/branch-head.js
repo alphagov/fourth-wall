@@ -2,7 +2,14 @@
   "use strict";
   window.FourthWall = window.FourthWall || {};
 
-  FourthWall.MasterHead = FourthWall.Status.extend({
+  FourthWall.BranchHead = FourthWall.Status.extend({
+
+    initialize: function () {
+      this.on('change:branch', function () {
+        this.fetch();
+      }, this);
+    },
+
     url: function () {
       return [
         this.get('baseUrl'),
@@ -11,12 +18,16 @@
         'git',
         'refs',
         'heads',
-        'master'
+        this.get('branch')
       ].join('/');
     },
 
     parse: function (response) {
       return response;
+    },
+
+    fetch: function() {
+      return FourthWall.overrideFetch.call(this, this.get('baseUrl'));
     }
   });
 }());

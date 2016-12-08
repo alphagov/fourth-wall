@@ -3,6 +3,11 @@
   window.FourthWall = window.FourthWall || {};
 
   FourthWall.Comment = Backbone.Model.extend({
+
+    url: function () {
+      return this.get('commentsUrl');
+    },
+
     parse: function (response) {
       var thumbsup = response.some(function(comment) {
         var checkFor = ["👍", ":+1:", ":thumbsup:"];
@@ -15,8 +20,9 @@
         numComments: response.length
       };
     },
+
     fetch: function() {
-      return FourthWall.overrideFetch.call(this, this.url);
+      return FourthWall.overrideFetch.call(this, this.get('baseUrl'));
     }
   });
 }());

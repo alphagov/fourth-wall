@@ -21,11 +21,7 @@
     },
 
     fetch: function() {
-      return FourthWall.overrideFetch.call(this, this.url());
-    },
-
-    parse: function (response) {
-      return response;
+      return FourthWall.overrideFetch.call(this, this.get('baseUrl'));
     }
   });
 }());
