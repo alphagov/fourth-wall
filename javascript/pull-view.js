@@ -62,7 +62,7 @@
       }
 
       var labelsHTML = "";
-      if (FourthWall.showLables &&
+      if (FourthWall.showLabels &&
             this.model.issue.get('labels') &&
             this.model.issue.get('labels').length > 0) {
         var labels = this.model.issue.get('labels')

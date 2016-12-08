@@ -146,6 +146,6 @@
   );
   FourthWall.importantUsers = [];
 
-  FourthWall.showLables = FourthWall.getQueryVariable('labels') === 'true';
+  FourthWall.showLabels = FourthWall.getQueryVariable('labels') === 'true';
 
 })();
