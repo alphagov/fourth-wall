@@ -26,6 +26,11 @@
         repo: this.get('repo'),
         pullId: this.get('number')
       });
+      this.master_head = new FourthWall.MasterHead({
+        baseUrl: this.collection.baseUrl,
+        userName: this.collection.userName,
+        repo: this.get('repo')
+      });
       this.on('change:head', function () {
         this.status.set('sha', this.get('head').sha);
       }, this);
@@ -52,6 +57,7 @@
       this.issue.fetch();
       this.comment.fetch();
       this.info.fetch();
+      this.master_head.fetch();
     },
 
     parse: function (data) {

@@ -72,10 +72,22 @@
         }
       }
 
+      var baseSync = "";
+      if (this.model.master_head.get('object') &&
+          this.model.get('base')) {
+
+          if (this.model.master_head.get('object').sha === this.model.get('base').sha) {
+            baseSync = " [Ready]";
+          }
+          else {
+            baseSync = " [Needs Rebasing]";
+          }
+      }
+
       this.$el.html([
         '<img class="avatar" src="', this.model.get('user').avatar_url, '" />',
         statusString,
-        '<h2>', this.model.get('repo'), '</h2>',
+        '<h2>', this.model.get('repo'), baseSync, '</h2>',
         '<div class="elapsed-time" data-created-at="',
         this.model.get('created_at'),
         '">',
