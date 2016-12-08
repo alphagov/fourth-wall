@@ -21,11 +21,7 @@
         this.get('branch')
       ].join('/');
     },
-
-    parse: function (response) {
-      return response;
-    },
-
+    
     fetch: function() {
       return FourthWall.overrideFetch.call(this, this.get('baseUrl'));
     }
