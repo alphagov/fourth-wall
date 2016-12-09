@@ -23,10 +23,6 @@
 
     fetch: function() {
       return FourthWall.overrideFetch.call(this, this.get('baseUrl'));
-    },
-
-    parse: function (response) {
-      return response;
     }
   });
 }());
