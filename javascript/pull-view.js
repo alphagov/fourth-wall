@@ -38,14 +38,7 @@
         suffix = "s";
       }
 
-      if (this.model.info.get('mergeable') === false){
-        var statusString = '<p class="status not-mergeable">No auto merge</p>';
-      } else if (this.model.status.get('state')){
-        var state = this.model.status.get('state');
-        var statusString = '<p class="status ' + state + '">Status: ' + state + '</p>';
-      } else {
-        var statusString = '<p class="status">No status</p>';
-      }
+      var statusString = this.generateStatusHTML(this.model.info, this.model.status);
 
       var commentCount = 0;
       if (this.model.comment.get('numComments')){
@@ -137,6 +130,38 @@
         days = "";
       }
       return days + ' ' + hours + 'h ' + minutes + 'm';
+    },
+
+    generateStatusHTML: function(info, status) {
+      var classes = '';
+      var text = '';
+      var success = false;
+
+      if (status.get('state')){
+        var state = status.get('state');
+        var statuses = status.get('statuses');
+        var success_count = 0;
+
+        success = state === 'success';
+
+        for (var i = 0; i < statuses.length; i++) {
+          if (statuses[i].state === 'success') {
+            success_count++;
+          }
+        }
+        classes = state;
+        text = state + ' (' + success_count + '/' + statuses.length + ')';
+      } else {
+        text = 'Unknown';
+      }
+
+      // if status is success but PR is not mergable, overwrite status...
+      if (success && info.get('mergeable') === false){
+        classes = 'not-mergeable';
+        text = 'Merge Conflicts';
+      }
+
+      return '<p class="status ' + classes + '">' + text + '</p>';
     }
   });
 

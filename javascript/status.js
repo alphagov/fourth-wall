@@ -5,7 +5,7 @@
   FourthWall.Status = Backbone.Model.extend({
 
     initialize: function () {
-      this.on('change:sha', function () {
+      this.on('change:ref', function () {
         this.fetch();
       }, this);
     },
@@ -15,8 +15,9 @@
         this.get('baseUrl'),
         this.get('userName'),
         this.get('repo'),
-        'statuses',
-        this.get('sha')
+        'commits',
+        this.get('ref'),
+        'status'
       ].join('/');
     },
 
@@ -25,11 +26,7 @@
     },
 
     parse: function (response) {
-      if (!response.length) {
-        return;
-      }
-      var data = response[0];
-      data.created_at = moment(data.created_at);
+      var data = response;
       data.failed = data.state !== 'success' && data.state !== 'pending';
       return data;
     }

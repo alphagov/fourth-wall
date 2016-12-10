@@ -15,7 +15,7 @@
         baseUrl: this.collection.baseUrl,
         userName: this.collection.userName,
         repo: this.get('repo'),
-        sha: this.get('head').sha
+        ref: this.get('head').sha
       });
 
       this.issue = new FourthWall.Issue({
@@ -45,7 +45,7 @@
       }, this);
 
       this.on('change:head', function () {
-        this.status.set('sha', this.get('head').sha);
+        this.status.set('ref', this.get('head').sha);
         this.info.set('sha', this.get('head').sha);
       }, this);
 
