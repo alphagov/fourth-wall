@@ -29,8 +29,9 @@
         this.$el.addClass('unimportant-repo');
       }
 
+      var thumbsup = '';
       if (this.model.comment.get('thumbsup')) {
-        this.$el.addClass("thumbsup");
+        thumbsup = '&#128077;'; // 👍
       }
 
       var suffix = "";
@@ -38,6 +39,8 @@
         suffix = "s";
       }
 
+      var statusFailed = this.model.status.get('failed');
+      var statusMergable = this.model.info.get('mergeable');
       var statusString = this.generateStatusHTML(this.model.info, this.model.status);
 
       var commentCount = 0;
@@ -65,22 +68,29 @@
         }
       }
 
+
+      var needsRebase = undefined;
       var baseSyncHTML = "";
       if (this.model.branchHead.get('object') &&
           this.model.get('base')) {
 
-          if (this.model.branchHead.get('object').sha === this.model.get('base').sha) {
-            baseSyncHTML = '<div class="base-sync base-sync-ok">Up-to-date</div>';
-          }
-          else {
+          needsRebase = this.model.branchHead.get('object').sha === this.model.get('base').sha;
+          if (needsRebase) {
             baseSyncHTML = '<div class="base-sync base-sync-rebase">Needs Rebase</div>';
           }
+          else {
+            baseSyncHTML = '<div class="base-sync base-sync-ok">Up-to-date</div>';
+          }
+      }
+
+      if (needsRebase === false && statusFailed === false && statusMergable === true) {
+        this.$el.addClass("ready");
       }
 
       this.$el.html([
         '<img class="avatar" src="', this.model.get('user').avatar_url, '" />',
         statusString,
-        '<h2>#', this.model.get('number'), ' - ', this.model.get('repo'), '</h2>',
+        '<h2>', '#', this.model.get('number'), ' - ', this.model.get('repo'), '</h2>',
         '<div class="elapsed-time" data-created-at="',
         this.model.get('created_at'),
         '">',
@@ -96,7 +106,7 @@
         ')',
         '</a>' + assignee + '</p>',
         baseSyncHTML,
-        '<div class="comments"> - ' + commentCount + " comment" + suffix + '</div>',
+        '<div class="comments"> - ' + commentCount + " comment" + suffix + ' ' + thumbsup + '</div>',
       ].join(''));
     },
 

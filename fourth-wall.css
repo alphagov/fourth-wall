@@ -78,7 +78,7 @@ body {
   display: none;
 }
 
-#pulls li.thumbsup {
+#pulls li.ready {
     background: #5c9317;
 }
 #pulls li h2 {
