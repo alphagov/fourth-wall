@@ -40,6 +40,7 @@
       }
 
       var statusFailed = this.model.status.get('failed');
+      var statusPending = this.model.status.get('state') === 'pending';
       var statusMergable = this.model.info.get('mergeable');
       var statusString = this.generateStatusHTML(this.model.info, this.model.status);
 
@@ -83,7 +84,8 @@
           }
       }
 
-      if (needsRebase === false && statusFailed === false && statusMergable === true) {
+      if (needsRebase === false && statusFailed === false &&
+          statusPending === false && statusMergable === true) {
         this.$el.addClass("ready");
       }
 
