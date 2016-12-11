@@ -76,10 +76,10 @@
 
           needsRebase = this.model.branchHead.get('object').sha === this.model.get('base').sha;
           if (needsRebase) {
-            baseSyncHTML = '<div class="base-sync base-sync-rebase">Needs Rebase</div>';
+            baseSyncHTML = '<div class="base-sync base-sync-ok">Up-to-date</div>';
           }
           else {
-            baseSyncHTML = '<div class="base-sync base-sync-ok">Up-to-date</div>';
+            baseSyncHTML = '<div class="base-sync base-sync-rebase">Needs Rebase</div>';
           }
       }
 
