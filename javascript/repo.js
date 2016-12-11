@@ -12,7 +12,7 @@
         baseUrl: this.get('baseUrl'),
         userName: this.get('userName'),
         repo: this.get('repo'),
-        ref: 'master'
+        ref: this.get('defaultBranch')
       });
 
       this.master.on('change:failed', function () {
