@@ -29,8 +29,9 @@
         this.$el.addClass('unimportant-repo');
       }
 
+      var thumbsup = '';
       if (this.model.comment.get('thumbsup')) {
-        this.$el.addClass("thumbsup");
+        thumbsup = '&#128077;'; // 👍
       }
 
       var suffix = "";
@@ -38,14 +39,10 @@
         suffix = "s";
       }
 
-      if (this.model.info.get('mergeable') === false){
-        var statusString = '<p class="status not-mergeable">No auto merge</p>';
-      } else if (this.model.status.get('state')){
-        var state = this.model.status.get('state');
-        var statusString = '<p class="status ' + state + '">Status: ' + state + '</p>';
-      } else {
-        var statusString = '<p class="status">No status</p>';
-      }
+      var statusFailed = this.model.status.get('failed');
+      var statusPending = this.model.status.get('state') === 'pending';
+      var statusMergable = this.model.info.get('mergeable');
+      var statusString = this.generateStatusHTML(this.model.info, this.model.status);
 
       var commentCount = 0;
       if (this.model.comment.get('numComments')){
@@ -72,10 +69,30 @@
         }
       }
 
+
+      var needsRebase = undefined;
+      var baseSyncHTML = "";
+      if (this.model.branchHead.get('object') &&
+          this.model.get('base')) {
+
+          needsRebase = this.model.branchHead.get('object').sha !== this.model.get('base').sha;
+          if (needsRebase) {
+            baseSyncHTML = '<div class="base-sync base-sync-rebase">Needs Rebase</div>';
+          }
+          else {
+            baseSyncHTML = '<div class="base-sync base-sync-ok">Up-to-date</div>';
+          }
+      }
+
+      if (needsRebase === false && statusFailed === false &&
+          statusPending === false && statusMergable === true) {
+        this.$el.addClass("ready");
+      }
+
       this.$el.html([
         '<img class="avatar" src="', this.model.get('user').avatar_url, '" />',
         statusString,
-        '<h2>', this.model.get('repo'), '</h2>',
+        '<h2>', '#', this.model.get('number'), ' - ', this.model.get('repo'), '</h2>',
         '<div class="elapsed-time" data-created-at="',
         this.model.get('created_at'),
         '">',
@@ -90,7 +107,8 @@
         this.model.get('number'),
         ')',
         '</a>' + assignee + '</p>',
-        '<p class="comments"> ' + commentCount + " comment" + suffix + '</p>',
+        baseSyncHTML,
+        '<div class="comments"> - ' + commentCount + " comment" + suffix + ' ' + thumbsup + '</div>',
       ].join(''));
     },
 
@@ -124,6 +142,38 @@
         days = "";
       }
       return days + ' ' + hours + 'h ' + minutes + 'm';
+    },
+
+    generateStatusHTML: function(info, status) {
+      var classes = '';
+      var text = '';
+      var success = false;
+
+      if (status.get('state')){
+        var state = status.get('state');
+        var statuses = status.get('statuses');
+        var success_count = 0;
+
+        success = state === 'success';
+
+        for (var i = 0; i < statuses.length; i++) {
+          if (statuses[i].state === 'success') {
+            success_count++;
+          }
+        }
+        classes = state;
+        text = state + ' (' + success_count + '/' + statuses.length + ')';
+      } else {
+        text = 'Unknown';
+      }
+
+      // if status is success but PR is not mergable, overwrite status...
+      if (success && info.get('mergeable') === false){
+        classes = 'not-mergeable';
+        text = 'Merge Conflicts';
+      }
+
+      return '<p class="status ' + classes + '">' + text + '</p>';
     }
   });
 
