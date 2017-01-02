@@ -64,7 +64,7 @@
             this.model.issue.get('labels').length > 0) {
         var labels = this.model.issue.get('labels')
         for (var i = 0; i < labels.length; i++) {
-            labelsHTML += '<div class="label" style="background-color: #' +
+            labelsHTML += '<div class="label" style="border-color: #' +
                             labels[i].color + ';">' + labels[i].name + ' </div>';
         }
       }
@@ -90,25 +90,23 @@
       }
 
       this.$el.html([
-        '<img class="avatar" src="', this.model.get('user').avatar_url, '" />',
-        statusString,
-        '<h2>', '#', this.model.get('number'), ' - ', this.model.get('repo'), '</h2>',
-        '<div class="elapsed-time" data-created-at="',
-        this.model.get('created_at'),
-        '">',
-        this.secondsToTime(this.model.get('elapsed_time')),
+        '<div class="card-header">',
+          '<img class="avatar" src="', this.model.get('user').avatar_url, '" />',
+          '<div class="card-label">',
+          '<span class="username">',this.model.get('user').login,'</span>',
+          '<div class="elapsed-time" data-created-at="', this.model.get('created_at'),'">',
+            this.secondsToTime(this.model.get('elapsed_time')),
+            '</div>',
+          '</div>',
+        '<div class="status-holder">', statusString , baseSyncHTML,'</div>',
         '</div>',
-        labelsHTML,
         '<p><a href="', this.model.get('html_url'), '">',
-        '<span class="username">',this.model.get('user').login,'</span>',
-        ': ',
-        this.escape(this.model.get('title')),
         ' (#',
         this.model.get('number'),
-        ')',
+        ') ',
+        this.escape(this.model.get('title')),
         '</a>' + assignee + '</p>',
-        baseSyncHTML,
-        '<div class="comments"> - ' + commentCount + " comment" + suffix + ' ' + thumbsup + '</div>',
+        labelsHTML,
       ].join(''));
     },
 
@@ -173,7 +171,7 @@
         text = 'Merge Conflicts';
       }
 
-      return '<p class="status ' + classes + '">' + text + '</p>';
+      return '<span class="status ' + classes + '">' + text + '</span>';
     }
   });
 
