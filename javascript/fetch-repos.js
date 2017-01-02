@@ -125,6 +125,7 @@
               repo: item.name,
               userName: item.owner.login,
               baseUrl: team.baseUrl + "/repos",
+              defaultBranch: item.default_branch
             };
           }));
         }

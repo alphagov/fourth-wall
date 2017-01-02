@@ -2,10 +2,10 @@
   "use strict";
   window.FourthWall = window.FourthWall || {};
 
-  FourthWall.Info = Backbone.Model.extend({
+  FourthWall.BranchHead = FourthWall.Status.extend({
 
     initialize: function () {
-      this.on('change:sha', function () {
+      this.on('change:branch', function () {
         this.fetch();
       }, this);
     },
@@ -15,8 +15,10 @@
         this.get('baseUrl'),
         this.get('userName'),
         this.get('repo'),
-        'pulls',
-        this.get('pullId')
+        'git',
+        'refs',
+        'heads',
+        this.get('branch')
       ].join('/');
     },
 
@@ -27,6 +29,6 @@
     parse: function (response) {
       return response;
     }
-  });
 
+  });
 }());

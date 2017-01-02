@@ -2,7 +2,7 @@
   "use strict";
   window.FourthWall = window.FourthWall || {};
 
-  FourthWall.Info = Backbone.Model.extend({
+  FourthWall.Issue = Backbone.Model.extend({
 
     initialize: function () {
       this.on('change:sha', function () {
@@ -15,7 +15,7 @@
         this.get('baseUrl'),
         this.get('userName'),
         this.get('repo'),
-        'pulls',
+        'issues',
         this.get('pullId')
       ].join('/');
     },
@@ -28,5 +28,4 @@
       return response;
     }
   });
-
 }());

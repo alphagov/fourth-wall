@@ -39,6 +39,10 @@
       this.each(function (model) {
         model.fetch();
       }, this);
+    },
+
+    parse: function (response) {
+      return response;
     }
 
   });
