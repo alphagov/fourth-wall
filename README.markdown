@@ -33,6 +33,7 @@ Optional query parameters:
  - `listinterval`: Update interval for the list of monitored repos in seconds (default: 900)
  - `interval`: Update interval for monitored repos in seconds (default: 60)
  - `filterusers`: Only show PRs from specific users, if set in config (default: false)
+ - `ignore_wip`: Only show PRs which do not have a `[WIP]` tag in the title. Tag position is irrelevant.
 
 The Gist should contain one or more JSON files with this syntax:
 ```json

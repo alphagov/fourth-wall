@@ -25,9 +25,13 @@
           model: model,
           list: this
         });
+        var ignoreWIP = FourthWall.ignoreWIP();
+        var isWIP = view.model.get('title').indexOf('[WIP]') >= 0;
         view.render();
-        view.$el.appendTo(this.$el);
-        this.lis.push(view);
+        if (!isWIP || (isWIP && !ignoreWIP)) {
+            view.$el.appendTo(this.$el);
+            this.lis.push(view);
+        }
       }, this);
       if (this.lis.length) {
         $('#all-quiet').hide();

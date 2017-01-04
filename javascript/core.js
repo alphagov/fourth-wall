@@ -49,6 +49,10 @@
     return token;
   };
 
+  FourthWall.ignoreWIP = function () {
+    return parseInt(FourthWall.getQueryVariable('ignore_wip') || 0);
+  };
+
   FourthWall.getTokenFromUrl = function (url) {
     var a = document.createElement('a');
     a.href = url;
