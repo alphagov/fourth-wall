@@ -30,7 +30,13 @@
       }
 
       if (this.model.comment.get('thumbsup') || this.model.reviewComment.get('approved')) {
-        this.$el.addClass("thumbsup");
+        if (!this.model.reviewComment.get('changesRequested')) {
+          this.$el.addClass("thumbsup");
+        }
+      }
+
+      if (this.model.reviewComment.get('changesRequested')) {
+        this.$el.addClass("changes-requested");
       }
 
       if (this.model.info.get('mergeable') === false){
@@ -46,7 +52,7 @@
       if (this.model.comment.get('numComments')){
         commentCount = commentCount + this.model.comment.get('numComments');
       }
-      
+
       if (this.model.reviewComment.get('numComments')){
         commentCount = commentCount + this.model.reviewComment.get('numComments');
       }
