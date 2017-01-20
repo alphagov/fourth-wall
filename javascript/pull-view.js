@@ -46,8 +46,14 @@
       if (this.model.comment.get('numComments')){
         commentCount = commentCount + this.model.comment.get('numComments');
       }
-      if (this.model.info.get('review_comments')){
-        commentCount = commentCount + this.model.info.get('review_comments');
+      
+      if (this.model.reviewComment.get('numComments')){
+        commentCount = commentCount + this.model.reviewComment.get('numComments');
+      }
+
+      var suffix = "";
+      if (commentCount !== 1) {
+        suffix = "s";
       }
 
       var assignee = "";
