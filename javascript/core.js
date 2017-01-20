@@ -1,7 +1,7 @@
 (function () {
   "use strict";
   window.FourthWall = window.FourthWall || {};
-  
+
   FourthWall.importantUsers = [];
 
   FourthWall.getQueryVariables = function(search) {
@@ -123,7 +123,7 @@
       var token = FourthWall.getTokenFromUrl(baseUrl);
       if (token !== false && token !== '') {
         xhr.setRequestHeader('Authorization', 'token ' + token);
-        xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+        xhr.setRequestHeader('Accept', 'application/vnd.github.black-cat-preview+json');
       }
     };
   };
