@@ -146,4 +146,5 @@
   );
   FourthWall.importantUsers = [];
 
+  FourthWall.wipHandling = (FourthWall.getQueryVariable('wiphandling') || 'none');
 })();

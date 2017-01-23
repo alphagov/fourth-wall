@@ -35,6 +35,11 @@
         this.$el.addClass("thumbsup");
       }
 
+      this.wip = (this.model.get('title').indexOf('WIP') >= 0);
+      if (FourthWall.wipHandling == 'small' && this.wip) {
+        this.$el.addClass("wip");
+      }
+
       if (this.model.info.get('mergeable') === false){
         var statusString = '<p class="status not-mergeable">No auto merge</p>';
       } else if (this.model.status.get('state')){

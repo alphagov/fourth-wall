@@ -94,6 +94,29 @@ body {
   color: white;
   text-decoration: none;
 }
+
+#pulls li.wip {
+  padding-left: 10px;
+  padding-right: 10px;
+  min-height: 50px;
+  background: #505050;
+}
+#pulls li.wip .avatar,
+#pulls li.wip .status,
+#pulls li.wip .elapsed-time,
+#pulls li.wip .comments {
+  display: none;
+}
+#pulls li.wip h2,
+#pulls li.wip p {
+  display: inline-block;
+  clear: none;
+}
+#pulls li.wip p {
+  padding-top: 0.2em;
+  padding-left: 0.5em;
+}
+
 #all-quiet {
     color: #b7b7b7;
     font-size:3em;
