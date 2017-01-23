@@ -29,14 +29,10 @@
         this.$el.addClass('unimportant-repo');
       }
 
-      if (this.model.comment.get('thumbsup') || this.model.reviewComment.get('approved')) {
-        if (!this.model.reviewComment.get('changesRequested')) {
-          this.$el.addClass("thumbsup");
-        }
-      }
-
       if (this.model.reviewComment.get('changesRequested')) {
         this.$el.addClass("changes-requested");
+      } else if (this.model.comment.get('thumbsup') || this.model.reviewComment.get('approved')) {
+        this.$el.addClass("thumbsup");
       }
 
       if (this.model.info.get('mergeable') === false){
