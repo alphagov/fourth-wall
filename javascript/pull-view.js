@@ -35,9 +35,13 @@
         this.$el.addClass("thumbsup");
       }
 
-      this.wip = (this.model.get('title').indexOf('WIP') >= 0);
-      if (FourthWall.wipHandling == 'small' && this.wip) {
-        this.$el.addClass("wip");
+      if (FourthWall.wipHandling == 'small') {
+        for (var i=0; i < FourthWall.wipStrings.length; i++) {
+          if (this.model.get('title').indexOf(FourthWall.wipStrings[i]) >= 0) {
+            this.$el.addClass("wip");
+            break;
+          }
+        }
       }
 
       if (this.model.info.get('mergeable') === false){
