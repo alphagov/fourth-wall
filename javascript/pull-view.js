@@ -33,11 +33,6 @@
         this.$el.addClass("thumbsup");
       }
 
-      var suffix = "";
-      if (this.model.comment.get('numComments') !== 1) {
-        suffix = "s";
-      }
-
       if (this.model.info.get('mergeable') === false){
         var statusString = '<p class="status not-mergeable">No auto merge</p>';
       } else if (this.model.status.get('state')){
@@ -53,6 +48,10 @@
       }
       if (this.model.info.get('review_comments')){
         commentCount = commentCount + this.model.info.get('review_comments');
+      }
+      var suffix = "";
+      if (commentCount !== 1) {
+        suffix = "s";
       }
 
       var assignee = "";
