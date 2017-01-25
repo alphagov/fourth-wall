@@ -49,9 +49,9 @@
       if (this.model.info.get('review_comments')){
         commentCount = commentCount + this.model.info.get('review_comments');
       }
-      var suffix = "";
+      var commentCountSuffix = "";
       if (commentCount !== 1) {
-        suffix = "s";
+        commentCountSuffix = "s";
       }
 
       var assignee = "";
@@ -77,7 +77,7 @@
         this.model.get('number'),
         ')',
         '</a>' + assignee + '</p>',
-        '<p class="comments"> ' + commentCount + " comment" + suffix + '</p>',
+        '<p class="comments"> ' + commentCount + " comment" + commentCountSuffix + '</p>',
       ].join(''));
     },
 
