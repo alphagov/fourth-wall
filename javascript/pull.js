@@ -6,12 +6,21 @@
     initialize: function () {
       this.set('repo', this.collection.repo);
       this.comment = new FourthWall.Comment();
+      this.reviewComment = new FourthWall.ReviewComment();
       this.comment.url = this.get('comments_url');
+      this.reviewComment.url = this.get('url') + '/reviews';
       this.on('change:comments_url', function () {
         this.comment.url = this.get('comments_url');
         this.comment.fetch();
       }, this);
+      this.on('change:url', function () {
+        this.reviewComment.url = this.get('url') + '/reviews';
+        this.reviewComment.fetch();
+      }, this);
       this.comment.on('change', function () {
+        this.trigger('change');
+      }, this);
+      this.reviewComment.on('change', function () {
         this.trigger('change');
       }, this);
       this.status = new FourthWall.Status({
@@ -44,6 +53,7 @@
     fetch: function () {
       this.status.fetch();
       this.comment.fetch();
+      this.reviewComment.fetch();
       this.info.fetch();
     },
 

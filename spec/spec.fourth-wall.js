@@ -283,6 +283,7 @@ describe("Fourth Wall", function () {
       var pull;
       beforeEach(function() {
         spyOn(FourthWall.Comment.prototype, "fetch");
+        spyOn(FourthWall.ReviewComment.prototype, "fetch");
         spyOn(FourthWall.Status.prototype, "fetch");
         spyOn(FourthWall.Info.prototype, "fetch");
         pull = new FourthWall.Pull({
@@ -296,6 +297,10 @@ describe("Fourth Wall", function () {
         expect(pull.comment instanceof FourthWall.Comment).toBe(true);
       });
 
+      it("instantiates an internal ReviewComment model", function () {
+        expect(pull.reviewComment instanceof FourthWall.ReviewComment).toBe(true);
+      });
+
       it("triggers a change when the comment changes", function () {
         var changed = false;
         pull.on('change', function () {
@@ -305,15 +310,35 @@ describe("Fourth Wall", function () {
         expect(changed).toBe(true);
       });
 
+      it("triggers a change when the review-comment changes", function () {
+        var changed = false;
+        pull.on('change', function () {
+          changed = true;
+        });
+        pull.reviewComment.set('foo', 'bar');
+        expect(changed).toBe(true);
+      });
+
       it("fetches new comment data when the comment URL changes", function () {
         pull.set('comments_url', 'foo');
         expect(pull.comment.url).toEqual('foo');
         expect(pull.comment.fetch).toHaveBeenCalled();
       });
 
+      it("fetches new review comment data when the review comment URL changes", function () {
+        pull.set('url', 'foo');
+        expect(pull.reviewComment.url).toEqual('foo/reviews');
+        expect(pull.reviewComment.fetch).toHaveBeenCalled();
+      });
+
       it("fetches new comment data when pull data has been fetched", function () {
         pull.fetch()
         expect(pull.comment.fetch).toHaveBeenCalled();
+      });
+
+      it("fetches new review comment data when pull data has been fetched", function () {
+        pull.fetch()
+        expect(pull.reviewComment.fetch).toHaveBeenCalled();
       });
 
       it("instantiates an internal Status model", function () {
@@ -410,7 +435,7 @@ describe("Fourth Wall", function () {
         repo.pulls.reset();
         var items = new FourthWall.ListItems([], {
           repos: new FourthWall.Repos([
-            
+
           ])
         });
       });

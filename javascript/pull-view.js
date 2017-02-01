@@ -29,13 +29,10 @@
         this.$el.addClass('unimportant-repo');
       }
 
-      if (this.model.comment.get('thumbsup')) {
+      if (this.model.reviewComment.get('changesRequested')) {
+        this.$el.addClass("changes-requested");
+      } else if (this.model.comment.get('thumbsup') || this.model.reviewComment.get('approved')) {
         this.$el.addClass("thumbsup");
-      }
-
-      var suffix = "";
-      if (this.model.comment.get('numComments') !== 1) {
-        suffix = "s";
       }
 
       if (this.model.info.get('mergeable') === false){
@@ -51,8 +48,14 @@
       if (this.model.comment.get('numComments')){
         commentCount = commentCount + this.model.comment.get('numComments');
       }
-      if (this.model.info.get('review_comments')){
-        commentCount = commentCount + this.model.info.get('review_comments');
+
+      if (this.model.reviewComment.get('numComments')){
+        commentCount = commentCount + this.model.reviewComment.get('numComments');
+      }
+
+      var suffix = "";
+      if (commentCount !== 1) {
+        suffix = "s";
       }
 
       var assignee = "";
