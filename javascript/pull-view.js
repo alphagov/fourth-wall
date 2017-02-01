@@ -57,6 +57,10 @@
       if (commentCount !== 1) {
         suffix = "s";
       }
+      var commentCountSuffix = "";
+      if (commentCount !== 1) {
+        commentCountSuffix = "s";
+      }
 
       var assignee = "";
       if (this.model.get('assignee')) {
@@ -81,7 +85,7 @@
         this.model.get('number'),
         ')',
         '</a>' + assignee + '</p>',
-        '<p class="comments"> ' + commentCount + " comment" + suffix + '</p>',
+        '<p class="comments"> ' + commentCount + " comment" + commentCountSuffix + '</p>',
       ].join(''));
     },
 
