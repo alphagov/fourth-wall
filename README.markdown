@@ -33,9 +33,9 @@ Optional query parameters:
  - `listinterval`: Update interval for the list of monitored repos in seconds (default: 900)
  - `interval`: Update interval for monitored repos in seconds (default: 60)
  - `filterusers`: Only show PRs from specific users, if set in config (default: false)
- - `wiphandling`: Specify treatment for PRs which have a `WIP` or `DO NOT MERGE` tag in the
-   title. Set to `small` to reduce the amount of information shown for these so
-   they take up less space.
+ - `wiphandling`: Specify treatment for PRs which have a `WIP` or `DO NOT
+   MERGE` tag in the title. By default these are shown in a reduced manner. Set
+   this param to `none` disable this and have them display like any other PRs.
 
 The Gist should contain one or more JSON files with this syntax:
 ```json
