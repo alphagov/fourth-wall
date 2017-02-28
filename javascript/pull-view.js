@@ -35,6 +35,15 @@
         this.$el.addClass("thumbsup");
       }
 
+      if (FourthWall.wipHandling == 'small') {
+        for (var i=0; i < FourthWall.wipStrings.length; i++) {
+          if (this.model.get('title').indexOf(FourthWall.wipStrings[i]) >= 0) {
+            this.$el.addClass("wip");
+            break;
+          }
+        }
+      }
+
       if (this.model.info.get('mergeable') === false){
         var statusString = '<p class="status not-mergeable">No auto merge</p>';
       } else if (this.model.status.get('state')){

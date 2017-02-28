@@ -146,4 +146,7 @@
   );
   FourthWall.importantUsers = [];
 
+  FourthWall.wipHandling = (FourthWall.getQueryVariable('wiphandling') || 'small');
+
+  FourthWall.wipStrings = ['WIP', 'DO NOT MERGE'];
 })();
