@@ -82,7 +82,7 @@
         '">',
         this.secondsToTime(this.model.get('elapsed_time')),
         '</div>',
-        '<p><a href="', this.model.get('html_url'), '">',
+        '<p><a href="', this.model.get('html_url'), ' target="_blank">',
         '<span class="username">',this.model.get('user').login,'</span>',
         ': ',
         this.escape(this.model.get('title')),
