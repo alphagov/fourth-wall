@@ -29,6 +29,12 @@
         repo: this.get('repo'),
         sha: this.get('head').sha
       });
+      this.issue = new FourthWall.Issue({
+        baseUrl: this.collection.baseUrl,
+        userName: this.collection.userName,
+        repo: this.get('repo'),
+        pullId: this.get('number')
+      });
       this.on('change:head', function () {
         this.status.set('sha', this.get('head').sha);
       }, this);
@@ -52,6 +58,7 @@
 
     fetch: function () {
       this.status.fetch();
+      this.issue.fetch();
       this.comment.fetch();
       this.reviewComment.fetch();
       this.info.fetch();

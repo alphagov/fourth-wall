@@ -73,6 +73,14 @@
         this.$el.addClass("under-review");
       }
 
+      var labelsHTML = "";
+      if (this.model.issue.get('labels') && this.model.issue.get('labels').length > 0) {
+        var labels = this.model.issue.get('labels')
+        for (var i = 0; i < labels.length; i++) {
+            labelsHTML += '<div class="label" style="background-color: #' + labels[i].color + ';">' + labels[i].name + ' </div>';
+        }
+      }
+
       this.$el.html([
         '<img class="avatar" src="', this.model.get('user').avatar_url, '" />',
         statusString,
@@ -82,6 +90,7 @@
         '">',
         this.secondsToTime(this.model.get('elapsed_time')),
         '</div>',
+        labelsHTML,
         '<p><a href="', this.model.get('html_url'), '">',
         '<span class="username">',this.model.get('user').login,'</span>',
         ': ',

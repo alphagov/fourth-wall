@@ -154,6 +154,14 @@ h2 {
         top: 10px;
     }
 
+    .label {
+        float: right;
+        border: 1px solid white;
+        margin-right: 10px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
     p.comments {
         float: right;
         clear: right;
