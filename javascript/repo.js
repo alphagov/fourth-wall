@@ -11,7 +11,8 @@
       this.master = new FourthWall.MasterStatus({
         baseUrl: this.get('baseUrl'),
         userName: this.get('userName'),
-        repo: this.get('repo')
+        repo: this.get('repo'),
+        defaultBranch: this.get('defaultBranch') || 'master'
       });
 
       this.master.on('change:failed', function () {
