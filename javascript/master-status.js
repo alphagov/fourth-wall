@@ -9,7 +9,7 @@
         this.get('userName'),
         this.get('repo'),
         'statuses',
-        'master'
+        this.get('defaultBranch')
       ].join('/');
     }
   });
