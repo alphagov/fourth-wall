@@ -42,6 +42,13 @@
             break;
           }
         }
+      } else if (FourthWall.wipHandling == 'hide') {
+        for (var i=0; i < FourthWall.wipStrings.length; i++) {
+          if (this.model.get('title').indexOf(FourthWall.wipStrings[i]) >= 0) {
+            this.$el.hide()
+            break;
+          }
+        }
       }
 
       if (this.model.info.get('mergeable') === false){
