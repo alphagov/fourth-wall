@@ -33,9 +33,9 @@ Optional query parameters:
  - `listinterval`: Update interval for the list of monitored repos in seconds (default: 900)
  - `interval`: Update interval for monitored repos in seconds (default: 60)
  - `filterusers`: Only show PRs from specific users, if set in config (default: false)
- - `wiphandling`: Specify treatment for WIP PRs; those which have a `WIP` or `DO NOT
-   MERGE` tag in the title. By default these are shown in a reduced manner. Set
-   this param to:
+ - `wiphandling`: Specify treatment for WIP PRs; those which have a `WIP`, `DO NOT
+   MERGE` or `REVIEW ONLY` tag in the title. By default these are shown in a reduced
+   manner. Set this param to:
     - _`none`_: display WIP PR's like any other PRs
     - _`small`_ or unset: show WIP PR's in a reduced manner *default behaviour*
     - _`hide`_: hide WIP PR's completely
