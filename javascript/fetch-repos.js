@@ -22,6 +22,11 @@
     var d = $.Deferred();
     $.when.apply(null, promises).done(function() {
       var allRepos = [].reduce.call(arguments, FetchRepos.mergeRepoArrays, []);
+
+      allRepos = allRepos.filter(function(repo) {
+        return FourthWall.filteredRepos.indexOf(repo.repo) === -1;
+      });
+
       d.resolve(allRepos);
     });
     return d;

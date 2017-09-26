@@ -138,6 +138,9 @@
   FourthWall.filterUsers = !!stripSlash(
     FourthWall.getQueryVariable('filterusers')
   );
+
+  FourthWall.filteredRepos = (FourthWall.getQueryVariable('filteredrepos') || '').split(',').map(stripSlash);
+
   FourthWall.gistId = stripSlash(
     FourthWall.getQueryVariable('gist')
   );
