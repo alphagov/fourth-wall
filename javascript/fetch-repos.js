@@ -24,7 +24,7 @@
       var allRepos = [].reduce.call(arguments, FetchRepos.mergeRepoArrays, []);
 
       allRepos = allRepos.filter(function(repo) {
-        return FourthWall.filteredRepos.indexOf(repo.repo) === -1;
+        return FourthWall.filterRepos.indexOf(repo.repo) === -1;
       });
 
       d.resolve(allRepos);
