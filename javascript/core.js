@@ -148,5 +148,5 @@
 
   FourthWall.wipHandling = (FourthWall.getQueryVariable('wiphandling') || 'small');
 
-  FourthWall.wipStrings = ['WIP', 'DO NOT MERGE'];
+  FourthWall.wipStrings = ['WIP', 'DO NOT MERGE', 'REVIEW ONLY'];
 })();
