@@ -138,6 +138,13 @@
   FourthWall.filterUsers = !!stripSlash(
     FourthWall.getQueryVariable('filterusers')
   );
+
+  //to deal with fact that query var could be string or array,
+  // put query var in array and then flatten it all out
+  var repos = [FourthWall.getQueryVariable('filterrepo') || ''];
+  FourthWall.filterRepos = [].concat.apply([], repos)
+    .map(stripSlash);
+
   FourthWall.gistId = stripSlash(
     FourthWall.getQueryVariable('gist')
   );

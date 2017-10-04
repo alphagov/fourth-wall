@@ -39,6 +39,9 @@ Optional query parameters:
     - _`none`_: display WIP PR's like any other PRs
     - _`small`_ or unset: show WIP PR's in a reduced manner *default behaviour*
     - _`hide`_: hide WIP PR's completely
+ - `filterrepo`: Specify a repository name you wish to exclude from displayed PRs
+ - `filterrepo[]`: Given multiple times allows for more than one repository to be excluded
+
 
 The Gist should contain one or more JSON files with this syntax:
 ```json
