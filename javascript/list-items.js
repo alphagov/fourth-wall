@@ -16,7 +16,7 @@
     },
 
     isThumbsUp: function (x) {
-      return ((x.comment.get('thumbsup') || x.reviewComment.get('approved')) && !x.reviewComment.get('changesRequested'));
+      return (x.reviewComment.get('approved') && !x.reviewComment.get('changesRequested'));
     },
 
     compare: function (f, a, b) {

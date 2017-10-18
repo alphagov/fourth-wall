@@ -31,7 +31,7 @@
 
       if (this.model.reviewComment.get('changesRequested')) {
         this.$el.addClass("changes-requested");
-      } else if (this.model.comment.get('thumbsup') || this.model.reviewComment.get('approved')) {
+      } else if (this.model.reviewComment.get('approved')) {
         this.$el.addClass("thumbsup");
       }
 
