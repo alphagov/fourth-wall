@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    runPreFlightChecks();
+
     var repos = new FourthWall.Repos();
     var items = new FourthWall.ListItems([], {
         repos: repos

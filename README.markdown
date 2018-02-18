@@ -102,3 +102,26 @@ An example enterprise repository.
 To load repositories from a team on an enterprise instance you must prefix the
 hostname to the team url parameter as with the token `<hostname>_team` (or
 `<hostname>_team[]` for multiple teams).
+
+## Security
+
+The token used to access Github is visible in the URL bar of the browser used
+to view Fourth Wall. This is potentially quite dangerous and you should be very
+careful about Github access tokens. There are some pre-flight checks to help
+with security but you should, at all times, be vigilant and discliplined.
+
+Required scopes:
+
+- `repo:status`
+- `repo:deployment`
+
+Optional scopes:
+
+- `read:org` is required if you are using the `team` query parameter mentioned above.
+
+Any other allowed scopes on the token will cause Fourth Wall to be unusable
+(due to an alert) until the token scopes have been fixed. This is a feature not a bug.
+
+Additionally there is a pre-flight check which checks that if Fourth Wall is
+being accessed remotely using HTTP. If Fourth Wall is being viewed remotely,
+please always use HTTPS.
