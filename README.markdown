@@ -41,6 +41,7 @@ Optional query parameters:
     - _`hide`_: hide WIP PR's completely
  - `filterrepo`: Specify a repository name you wish to exclude from displayed PRs
  - `filterrepo[]`: Given multiple times allows for more than one repository to be excluded
+ - `extra_scopes`: A comma separated list of extra scopes that your token requires
 
 
 The Gist should contain one or more JSON files with this syntax:
@@ -118,6 +119,7 @@ Required scopes:
 Optional scopes:
 
 - `read:org` is required if you are using the `team` query parameter mentioned above.
+- `repo` is needed if you need to give fourth-wall access to private repositories, this must be enabled using the `extra_scopes` query parameter documented above.
 
 Any other allowed scopes on the token will cause Fourth Wall to be unusable
 (due to an alert) until the token scopes have been fixed. This is a feature not a bug.

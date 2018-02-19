@@ -15,7 +15,11 @@ function runPreFlightChecks() {
   // - Make a request to the github rate limit endpoint
   //   (This will not affect the rate limit)
   // - Check what scopes we have access to
-  const token             = new FourthWall.getQueryVariables().token,
+  const queryVars         = new FourthWall.getQueryVariables(),
+        token             = queryVars.token,
+        extraScopes       = (queryVars.extra_scopes || '').split(',').filter(
+          function(scope) { return scope.length > 0 }
+        ),
         ghUrl             = 'https://api.github.com/rate_limit',
         authGhUrl         = ghUrl + '?access_token=' + token;
 
@@ -24,8 +28,10 @@ function runPreFlightChecks() {
     .then(function (headers)  { return headers.get('x-oauth-scopes')  })
     .then(function (scopes)   { return scopes.split(', '); })
     .then(function (scopes)   {
-      const allowedScopes = ['repo:status', 'repo_deployment', 'read:org'];
-      let   badScopes = scopes.filter(function(scope) {
+      const allowedScopes = [
+        'repo:status', 'repo_deployment', 'read:org'
+      ].concat(extraScopes);
+      let badScopes = scopes.filter(function(scope) {
         return allowedScopes.indexOf(scope) < 0;
       });
 
