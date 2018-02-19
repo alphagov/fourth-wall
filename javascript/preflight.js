@@ -1,7 +1,7 @@
 function runPreFlightChecks() {
   const isHttp      = window.location.protocol == 'http:',
         isLocalhost = window.location.hostname == 'localhost'
-        isUnsafe    = !(isHttp && isLocalhost);
+        isUnsafe    = !isHttp || !(isHttp && isLocalhost);
 
   if (isUnsafe) {
     const isHttpMessage = [
