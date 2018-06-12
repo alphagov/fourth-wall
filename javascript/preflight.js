@@ -41,12 +41,10 @@ function runPreFlightChecks() {
               'You have the following unnecessary scopes: <',
               badScopesString,
               '>; these scopes should be removed.',
-              'Clicking accept will reload this page.',
               'Reloading the page will show this message unless the scopes are correct.',
             ].join(' ');
 
         alert(badScopesMessage);
-        window.location.reload(true);
       }
     });
 }
