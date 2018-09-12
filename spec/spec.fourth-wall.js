@@ -165,6 +165,22 @@ describe("Fourth Wall", function () {
     });
   });
 
+  describe("isWip", function () {
+    for (const wipString of ["wip", "WIP", "DO NOT MERGE", "Do not Merge"]) {
+      it(`should return true if the title contains ${wipString}`, function() {
+        let pull = {get: function() { return `my title ${wipString} for PR`; }};
+        expect(FourthWall.isWip(pull)).toEqual(true);
+      });
+    }
+
+    for (const nonWipString of ["WAP", "DO PLEASE MERGE"]) {
+      it(`should return false if the title contains ${nonWipString}`, function() {
+        let pull = {get: function() { return `my title ${nonWipString} for PR`; }};
+        expect(FourthWall.isWip(pull)).toEqual(false);
+      });
+    }
+  });
+
   describe("FetchRepos", function () {
     describe("mergeRepoArrays", function () {
       it("should merge two repo arrays", function () {

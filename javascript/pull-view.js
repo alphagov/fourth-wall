@@ -35,19 +35,14 @@
         this.$el.addClass("thumbsup");
       }
 
-      if (FourthWall.wipHandling == 'small') {
-        for (var i=0; i < FourthWall.wipStrings.length; i++) {
-          if (this.model.get('title').indexOf(FourthWall.wipStrings[i]) >= 0) {
+      if (FourthWall.isWip(this.model)) {
+        switch (FourthWall.wipHandling) {
+          case 'small':
             this.$el.addClass("wip");
             break;
-          }
-        }
-      } else if (FourthWall.wipHandling == 'hide') {
-        for (var i=0; i < FourthWall.wipStrings.length; i++) {
-          if (this.model.get('title').indexOf(FourthWall.wipStrings[i]) >= 0) {
-            this.$el.hide()
+          case 'hide':
+            this.$el.hide();
             break;
-          }
         }
       }
 

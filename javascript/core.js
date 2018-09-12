@@ -135,6 +135,15 @@
     }
   };
 
+  FourthWall.isWip = function(pull) {
+    for (const wipString of FourthWall.wipStrings) {
+      if (pull.get('title').toLowerCase().includes(wipString.toLowerCase())) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   FourthWall.filterUsers = !!stripSlash(
     FourthWall.getQueryVariable('filterusers')
   );
