@@ -13,7 +13,7 @@ The project is hosted through Github pages:
 
 You will need to have a Github API token with access to the relevant
 repositories if you don't already have one. To do that, visit
-https://github.com/settings/applications and create a new personal
+https://github.com/settings/tokens and create a new personal
 access token. To use the `team` parameter you will need to give the token
 the `read:org` permission.
 
