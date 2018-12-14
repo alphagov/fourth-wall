@@ -9,7 +9,7 @@ Pure client-side pull request and build status monitor for Github repositories.
 ## How to use
 
 The project is hosted through Github pages:
-`http://alphagov.github.io/fourth-wall/?token=_token_&gist=_gist_id_`
+`https://alphagov.github.io/fourth-wall/?token=_token_&gist=_gist_id_`
 
 You will need to have a Github API token with access to the relevant
 repositories if you don't already have one. To do that, visit
