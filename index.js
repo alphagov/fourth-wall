@@ -1,5 +1,6 @@
 $(document).ready(function() {
     runPreFlightChecks();
+    runConnectivityChecks();
 
     var repos = new FourthWall.Repos();
     var items = new FourthWall.ListItems([], {

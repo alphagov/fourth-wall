@@ -123,6 +123,21 @@ body {
     margin:1em;
 }
 
+#no-connectivity {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(32, 32, 32, 0.85);
+    color: #b7b7b7;
+    font-size:3em;
+    font-family: monospace;
+}
+
 .elapsed-time {
     line-height: 110%;
     font-size: 1.5em;
