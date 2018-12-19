@@ -4,7 +4,7 @@
 }
 body {
     font-family: ntatabularnumbers, nta, sans-serif;
-    background:black;
+    background: #0b0c0c;
     margin:10px;
 }
 .avatar {
@@ -23,17 +23,17 @@ body {
 }
 
 .success {
-    background-color:green;
+    background-color: #006435; 
 }
 .failure, .error {
-    background-color: #BF1E2D;
+    background-color: #b10e1e;
 }
 .not-mergeable {
-    background-color: #9FA098;
+    background-color: #bfc1c3;
     font-size: 0.9em;
 }
 .pending {
-    background-color: orange;
+    background-color: #bfc1c3;
 }
 
 #pulls {
@@ -44,7 +44,7 @@ body {
     margin: 0;
 }
 #pulls li {
-    background:#9FA098;
+    background:#b10e1e;
     padding: 10px;
     color:white;
     margin-bottom:10px;
@@ -57,32 +57,32 @@ body {
     clear:both;
 }
 #pulls li.failed {
-    background: #B10E1E;
+    background: #b10e1e;
 }
 #pulls li.age-fresh.under-review {
-  background: #0C56E8;
+  background: #28a197;
 }
 #pulls li.age-aging.under-review {
-    background: #370CE8;
+    background: #2b8cc4;
 }
 #pulls li.age-old.under-review {
-    background: #7E0DFF;
+    background: #2e358b;
 }
 #pulls li.age-aging {
-    background: #f4ab38;
+    background: #f499be;
 }
 #pulls li.age-old {
-    background: #F47738;
+    background: #d53880;
 }
 #pulls li.unimportant-user.unimportant-repo {
   display: none;
 }
 
 #pulls li.thumbsup {
-    background: #5c9317;
+    background: #85994b;
 }
 #pulls li.changes-requested {
-    background: #BF1E2D;
+    background: #f47738;
 }
 #pulls li h2 {
     margin:0;
