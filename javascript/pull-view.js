@@ -2,6 +2,79 @@
   "use strict";
   window.FourthWall = window.FourthWall || {};
 
+	function statusStripePartial () {
+		return `<div class="status-stripe"></div>`
+	}
+
+  function repoPartial (userName, repo, pullNum, link) {
+    return `
+			<a class="repo-partial" href="${link}">
+				<h2 class="govuk-heading-m">
+					${userName} / ${repo} &num;${pullNum}
+				</h2>
+			</a>
+    `
+  }
+
+  function authorPartial (userName, avatarUrl) {
+    return `
+			<p class="author-partial govuk-body">
+				<a class="author"
+						 href="https://github.com/${userName}">
+					<img src="${avatarUrl}" />
+					<span>${userName}</span>
+				</a>
+			</p>
+    `
+  }
+
+	function mergeablePartial (mergeable) {
+		if (mergeable !== true) {
+			return `
+				<p class="mergeable-partial govuk-body">
+					Not able to be merged
+				</p>
+			`
+		}
+	}
+
+	function openDatePartial (createdAt, elapsedTime) {
+		return `
+			<p class="open-date-partial govuk-body"
+           data-created-at="${createdAt}">
+				${elapsedTime}
+			</p>
+		`
+	}
+
+	function assignedToPartial (assignee) {
+		if (!assignee) return ``
+
+		return `
+			<p class="assigned-to-partial govuk-body">
+				Assigned to @${assignee}
+      </p>
+    `
+	}
+
+	function commentsPartial (numComments) {
+    if (numComments === 0) {
+			return `<p class="comments-partial govuk-body">No comments</p>`
+    } else if (numComments === 1) {
+			return `<p class="comments-partial govuk-body">1 comment</p>`
+		} else {
+			return `<p class="comments-partial govuk-body">${numComments} comment</p>`
+		}
+  }
+
+	function titlePartial (prTitle) {
+		return `
+			<div class="govuk-inset-text">
+				${prTitle}
+			</div>
+    `
+	}
+
 
   FourthWall.PullView = Backbone.View.extend({
     tagName: 'li',
@@ -46,53 +119,50 @@
         }
       }
 
-      if (this.model.info.get('mergeable') === false){
-        var statusString = '<p class="status not-mergeable">No auto merge</p>';
-      } else if (this.model.status.get('state')){
-        var state = this.model.status.get('state');
-        var statusString = '<p class="status ' + state + '">Status: ' + state + '</p>';
-      } else {
-        var statusString = '<p class="status">No status</p>';
-      }
-
-      var commentCount = 0;
-      if (this.model.comment.get('numComments')){
-        commentCount = commentCount + this.model.comment.get('numComments');
-      }
-
-      if (this.model.reviewComment.get('numComments')){
-        commentCount = commentCount + this.model.reviewComment.get('numComments');
-      }
-
-      var suffix = "";
-      if (commentCount !== 1) {
-        suffix = "s";
-      }
-
-      var assignee = "";
-      if (this.model.get('assignee')) {
-        assignee = ' under review by ' + this.model.get('assignee').login;
-        this.$el.addClass("under-review");
-      }
-
       this.$el.html([
-        '<img class="avatar" src="', this.model.get('user').avatar_url, '" />',
-        statusString,
-        '<h2>', this.model.get('repo'), '</h2>',
-        '<div class="elapsed-time" data-created-at="',
-        this.model.get('created_at'),
-        '">',
-        this.secondsToTime(this.model.get('elapsed_time')),
-        '</div>',
-        '<p><a href="', this.model.get('html_url'), '">',
-        '<span class="username">',this.model.get('user').login,'</span>',
-        ': ',
-        this.escape(this.model.get('title')),
-        ' (#',
-        this.model.get('number'),
-        ')',
-        '</a>' + assignee + '</p>',
-        '<p class="comments"> ' + commentCount + " comment" + suffix + '</p>',
+				statusStripePartial(),
+
+				`<div class="content">`,
+
+        repoPartial(
+					this.model.get('base').user.login,
+					this.model.get('repo'),
+					this.model.get('number'),
+					this.model.get('html_url')
+				),
+
+				`<div class="pr-info">`,
+
+        authorPartial(
+          this.model.get('user').login,
+          this.model.get('user').avatar_url
+        ),
+
+				"<div>",
+				openDatePartial(
+					this.model.get('created_at'),
+					this.secondsToTime(this.model.get('elapsed_time'))
+				),
+				assignedToPartial(
+					this.model.get('assignee')
+				),
+				commentsPartial(
+					(
+						this.model.comment.get('numComments') || 0
+					) + (
+						this.model.reviewComment.get('numComments') || 0
+					)
+				),
+				mergeablePartial(this.model.info.get('mergeable')),
+				"</div>",
+
+				"</div>",
+
+				titlePartial(
+					this.escape(this.model.get('title'))
+				),
+
+				"</div>",
       ].join(''));
     },
 
@@ -125,7 +195,7 @@
       } else {
         days = "";
       }
-      return days + ' ' + hours + 'h ' + minutes + 'm';
+			return `${days} ${hours}h ${minutes}m`
     }
   });
 
