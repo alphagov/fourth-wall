@@ -1,5 +1,6 @@
 // Verify arguments
-if (phantom.args.length === 0) {
+var system = require('system');
+if (system.args.length === 1) {
     console.log("Simple JasmineBDD test runner for phantom.js");
     console.log("Usage: phantomjs-testrunner.js url_to_runner.html");
     console.log("Accepts http:// and file:// urls");
@@ -8,7 +9,7 @@ if (phantom.args.length === 0) {
     phantom.exit(2);
 }
 else {
-    var args = phantom.args;
+    var args = system.args;
     var pages = [], page, address, resultsKey, i, l;
 
     var setupPageFn = function(p, k) {
@@ -18,7 +19,7 @@ else {
         };
     };
 
-    for (i = 0, l = args.length; i < l; i++) {
+    for (i = 1, l = args.length; i < 2; i++) {
         address = args[i];
         console.log("Loading " + address);
 
