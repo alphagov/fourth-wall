@@ -1,0 +1,20 @@
+{
+  "name": "fourth-wall",
+  "version": "1.0.0",
+  "description": "[![Build Status](https://travis-ci.org/alphagov/fourth-wall.png)](https://travis-ci.org/alphagov/fourth-wall)",
+  "dependencies": {},
+  "devDependencies": {
+    "puppeteer": "^1.11.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alphagov/fourth-wall.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alphagov/fourth-wall/issues"
+  },
+  "homepage": "https://github.com/alphagov/fourth-wall#readme"
+}
