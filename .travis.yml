@@ -1,7 +1,11 @@
-before_script: 
-  - python -m SimpleHTTPServer & 
-script:
-  - sh spec/testrunner.sh
+language: node_js
 notifications:
   email: false
+sudo: false
+install:
+  - npm install --no-optional
+before_script:
+  - python -m SimpleHTTPServer &
+script:
+  - npm test
 
