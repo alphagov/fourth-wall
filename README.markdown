@@ -43,8 +43,9 @@ Optional query parameters:
  - `filterrepo[]`: Given multiple times allows for more than one repository to be excluded
  - `extra_scopes`: A comma separated list of extra scopes that your token requires
 
+## Gist
 
-The Gist should contain one or more JSON files with this syntax:
+If the `gist` parameter is used, the Gist should contain one or more JSON files with this syntax:
 ```json
 [
   {
@@ -81,6 +82,28 @@ Examples:
 * A simple list of repos for the [Performance Platform team](https://gist.github.com/abersager/6449384)
 * A list of repos and custom CSS for the [Mainstream team](https://gist.github.com/norm/7248264)
 * A list of repos, custom CSS and users for the [Core team](https://gist.github.com/issyl0/70cf0c8f3d0b1ccd2f6e)
+
+## File
+
+If the `file` parameter is used, the file should contain JSON with this syntax:
+```json
+[
+  {
+    "userName": "<username of the repo owner>",
+    "repo": "<repository name>"
+  }
+]
+```
+
+If desired, `"owner"` can be as a synonym for `"userName"`, while `"name"` can
+be used as a synonym for `"repo"`.
+
+The value of the `file` parameter must refer to the file using a GitHub API
+URL. For example, to point to `foo/bar.json` in the `alphagov/example` repo,
+use `https://api.github.com/repos/alphagov/example/contents/foo/bar.json`.
+
+Do not URL-encode the `file` parameter’s value:
+`https://alphagov.github.io/fourth-wall/?token=_token_&file=https://api.github.com/repos/alphagov/example/contents/foo/repos.json`
 
 ## Support for other githubs
 
