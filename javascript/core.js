@@ -124,6 +124,8 @@
       if (token !== false && token !== '') {
         xhr.setRequestHeader('Authorization', 'token ' + token);
         xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+        // draft pull requests (https://developer.github.com/changes/2019-02-14-draft-pull-requests/)
+        xhr.setRequestHeader('Accept', 'application/vnd.github.shadow-cat-preview+json');
       }
     };
   };
@@ -141,6 +143,11 @@
         return true;
       }
     }
+
+    if (pull.get('draft')) {
+      return true;
+    }
+
     return false;
   };
 
