@@ -168,17 +168,22 @@ describe("Fourth Wall", function () {
   describe("isWip", function () {
     for (const wipString of ["wip", "WIP", "DO NOT MERGE", "Do not Merge"]) {
       it(`should return true if the title contains ${wipString}`, function() {
-        let pull = {get: function() { return `my title ${wipString} for PR`; }};
+        let pull = {get: function(key) { return key === "title" ? `my title ${wipString} for PR` : false; }};
         expect(FourthWall.isWip(pull)).toEqual(true);
       });
     }
 
     for (const nonWipString of ["WAP", "DO PLEASE MERGE"]) {
       it(`should return false if the title contains ${nonWipString}`, function() {
-        let pull = {get: function() { return `my title ${nonWipString} for PR`; }};
+        let pull = {get: function(key) { return key === "title" ? `my title ${nonWipString} for PR` : false; }};
         expect(FourthWall.isWip(pull)).toEqual(false);
       });
     }
+
+    it("should return true if the pull request is a draft", function() {
+      let pull = {get: function(key) { return key === "draft"; }};
+      expect(FourthWall.isWip(pull)).toEqual(true);
+    });
   });
 
   describe("FetchRepos", function () {
