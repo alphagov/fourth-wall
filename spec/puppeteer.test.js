@@ -23,6 +23,6 @@ it('passes all tests', async (done) => {
   await page.waitForSelector('.passingAlert')
   const passed = await page.evaluate( () => document.querySelector('.passingAlert').textContent )
 
-  expect(passed).toEqual('Passing 54 specs')
+  expect(passed).toEqual('Passing 55 specs')
   done()
 })

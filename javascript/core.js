@@ -172,4 +172,8 @@
   FourthWall.wipHandling = (FourthWall.getQueryVariable('wiphandling') || 'small');
 
   FourthWall.wipStrings = ['WIP', 'DO NOT MERGE', 'REVIEW ONLY'];
+
+  FourthWall.appendErrorMessage = function(content) {
+    $(document.body).prepend(`<p class="error">${content}</p>`);
+  };
 })();

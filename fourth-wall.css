@@ -25,9 +25,27 @@ body {
 .success {
     background-color:green;
 }
+
 .failure, .error {
+    padding: 1rem;
     background-color: #BF1E2D;
+    color: white;
+    float: none;
+    margin: 0;
 }
+
+.error a {
+    color: white;
+}
+
+.error a:focus {
+    color: #0b0c0c;
+    outline: 3px solid transparent;
+    background-color: #ffdd00;
+    box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c;
+    text-decoration: none;
+}
+
 .not-mergeable {
     background-color: #9FA098;
     font-size: 0.9em;
