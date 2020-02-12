@@ -174,6 +174,6 @@
   FourthWall.wipStrings = ['WIP', 'DO NOT MERGE', 'REVIEW ONLY'];
 
   FourthWall.appendErrorMessage = function(content) {
-    $(document.body).append(`<h3 class="error">${content}</h3>`);
+    $(document.body).prepend(`<p class="error">${content}</p>`);
   };
 })();
