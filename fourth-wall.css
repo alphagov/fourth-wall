@@ -26,6 +26,7 @@ body {
     background-color:green;
 }
 .failure, .error {
+    padding: 1rem;
     background-color: #BF1E2D;
 }
 .not-mergeable {

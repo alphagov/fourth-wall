@@ -20,13 +20,28 @@ function runPreFlightChecks() {
         extraScopes       = (queryVars.extra_scopes || '').split(',').filter(
           function(scope) { return scope.length > 0 }
         ),
-        ghUrl             = 'https://api.github.com/rate_limit',
+        ghUrl             = 'https://api.github.com/rate_limit';
+
+  if (!token) {
+    FourthWall.appendErrorMessage(`You need to <a href="https://github.com/alphagov/fourth-wall#how-to-use">provide a valid token</a> in order to use Fourth Wall.`);
+    return;
+  }
 
   fetch(ghUrl, {
     headers: {
       'Authorization': 'token ' + token
     }
   })
+    .then(function(response) {
+      if (response.ok) {
+        return response;
+      } else {
+        response.text()
+          .then(function(text) {
+            FourthWall.appendErrorMessage(`Something went wrong during preflight request: ${text}`);
+          });
+      }
+    })
     .then(function (response) { return response.headers; })
     .then(function (headers)  { return headers.get('x-oauth-scopes')  })
     .then(function (scopes)   { return scopes.split(', '); })
