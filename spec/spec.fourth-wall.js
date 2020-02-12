@@ -180,8 +180,14 @@ describe("Fourth Wall", function () {
       });
     }
 
-    it("should return true if the pull request is a draft", function() {
-      let pull = {get: function(key) { return key === "draft"; }};
+    it(`should return true if the pull request is a draft`, function() {
+      const pr = {
+        title: "Some PR",
+        draft: true
+      };
+
+      const pull = {get: function(key) { return pr[key] } };
+
       expect(FourthWall.isWip(pull)).toEqual(true);
     });
   });
