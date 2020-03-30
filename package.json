@@ -4,7 +4,7 @@
   "description": "[![Build Status](https://travis-ci.org/alphagov/fourth-wall.png)](https://travis-ci.org/alphagov/fourth-wall)",
   "dependencies": {},
   "devDependencies": {
-    "jest": "^24.9.0",
+    "jest": "^25.2.4",
     "puppeteer": "^2.0.0"
   },
   "scripts": {
