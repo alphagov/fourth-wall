@@ -5,7 +5,7 @@
   "dependencies": {},
   "devDependencies": {
     "jest": "^26.1.0",
-    "puppeteer": "^5.1.0"
+    "puppeteer": "^5.2.0"
   },
   "scripts": {
     "test": "jest"
