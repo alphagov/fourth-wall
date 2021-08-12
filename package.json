@@ -4,7 +4,9 @@
   "description": "[![Build Status](https://travis-ci.org/alphagov/fourth-wall.png)](https://travis-ci.org/alphagov/fourth-wall)",
   "dependencies": {},
   "devDependencies": {
+    "http-server": "^0.12.3",
     "jest": "^26.6.3",
+    "jest-puppeteer": "^5.0.4",
     "puppeteer": "^10.0.0"
   },
   "scripts": {
@@ -17,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/alphagov/fourth-wall/issues"
   },
-  "homepage": "https://github.com/alphagov/fourth-wall#readme"
+  "homepage": "https://github.com/alphagov/fourth-wall#readme",
+  "jest": {
+    "preset": "jest-puppeteer"
+  }
 }
