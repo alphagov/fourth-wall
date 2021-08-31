@@ -11,6 +11,8 @@ function runPreFlightChecks() {
     alert(isHttpMessage);
   }
 
+  FourthWall.appendErrorMessage(`This service will be retired on 22nd September. Contact the Digital Marketplace team if you would like to take it over instead.`);
+
   // We will:
   // - Make a request to the github rate limit endpoint
   //   (This will not affect the rate limit)
