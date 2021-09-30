@@ -1,3 +1,7 @@
+# Retired and unmaintained
+
+This project is retired and unmaintained. Do not use: it has known accessibility problems, and may have open security issues.
+
 # Fourth Wall
 
 [![Build Status](https://travis-ci.org/alphagov/fourth-wall.png)](https://travis-ci.org/alphagov/fourth-wall)
